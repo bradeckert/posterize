@@ -1,0 +1,28 @@
+<head>
+  <title>posterize</title>
+</head>
+
+<body>
+  {{> people}}
+</body>
+
+<template name="people">
+	<ul>
+	{{#each users}}
+	<li>
+		{{user}}
+		{{> posters}}
+	</li>
+	{{/each}}
+	</ul>
+</template>
+
+<template name="posters">
+	<ul>
+		{{#each posters}}
+		<li>
+			<img src="{{file}}" alt="{{owner}}"/>
+		</li>
+		{{/each}}
+	</ul>
+</template>
