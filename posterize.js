@@ -53,12 +53,60 @@ if (Meteor.isServer) {
         Posters.remove({file: filename});
       },
 
-      addInfo: function( filename, title, tags, where, date, time, notes ) {
+      // Edit a poster
+      // must resend all info in order to be updated
+      // where is a GeoJSON operator: http://docs.mongodb.org/manual/reference/glossary/#term-geojson
+      addPosterInfo: function( filename, title, tags, where, date, time, notes ) {
         Posters.update( 
           {file: filename}, 
-          {$set: {title: title, tags: tags, where: where, date: date, time: time, notes: notes}
+          {$set: {title: title, 
+                  tags: tags, 
+                  where: where, 
+                  date: date, 
+                  time: time, 
+                  notes: notes
+                }
         });
         console.log(Posters.find({file: filename}));
+      },
+
+      // get all the info about a poster
+      // returns a map of the data
+      getPosterInfo: function ( filename ) {
+        var poster = Posters.find({file: filename});
+        return {title: poster.title, 
+                tags: poster.tags, 
+                where: poster.where, 
+                date: poster.date, 
+                time: poster.time, 
+                notes: poster.notes
+              };
+      },
+      // mine is a bool specifying whether searching all/mine
+      // where has a longitude and latitude field
+      // within is in miles
+      search: function ( username, mine, tags, where, within, start_date, end_date ) {
+        if ( mine ) {
+          var with_mine = Posters.find({ owner: username });
+        } else {
+          var with_mine = Posters.find({});
+        }
+
+        var with_date = with_mine.find({$and: [ {date: {$gte: start_date}}, {date: {$lte: end_date}} ] });
+
+        var with_tags = with_date.find({tags: {$in: tags}});
+
+        var with_where = with_tags.find({
+          where: {
+            $near : {
+              $geometry : {
+                 type : "Point" ,
+                 coordinates : [ where.longitude , where.latitude ] 
+              },
+              $maxDistance : within
+            }
+          }
+        });
       }
 
     });
