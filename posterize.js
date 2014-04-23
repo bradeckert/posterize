@@ -82,6 +82,7 @@ if (Meteor.isServer) {
                 notes: poster.notes
               };
       },
+
       // mine is a bool specifying whether searching all/mine
       // where has a longitude and latitude field
       // within is in miles
@@ -107,6 +108,11 @@ if (Meteor.isServer) {
             }
           }
         });
+      },
+
+      // return all the posters for a given user
+      getPostersForUser: function( username ) {
+        return Posters.find({ owner: username });
       }
 
     });
