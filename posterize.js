@@ -5,20 +5,12 @@ if (Meteor.isClient) {
   //temp user name
   Session.set('current_user', "Joe");
 
-  Template.people.users = function () {
-    return Users.find({});
-  };
-
-  Template.posters.posters = function () {
-    return Posters.find({});
-  };
-
   // remove a poster
-  Template.posters.events({
-    'click': function () {
-      Meteor.call('removePoster', this.file);
-    }
-  });
+  // Template.posters.events({
+  //   'click': function () {
+  //     Meteor.call('removePoster', this.file);
+  //   }
+  // });
 
 }
 

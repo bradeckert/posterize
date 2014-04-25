@@ -1,28 +1,174 @@
 <head>
-  <title>posterize</title>
+	<title>posterize</title>
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+	<script src="/script.js"></script>
+	<link rel="stylesheet" href="posterize.css" />
+	<!-- HTML from MASHA -->
+	<link href="http://fonts.googleapis.com/css?family=Patrick+Hand+SC"
+	rel="stylesheet" type="text/css" />
+	<!-- END of HTML from MASHA -->
 </head>
 
 <body>
-  {{> people}}
-</body>
+	<div class="smartphone">
+		<div id="container">
+			<div class="intro"></div>
+			<div class="content_capture">
+				<img class="dummy_poster" src="/assets/sample_poster.png"/>
 
-<template name="people">
-	<ul>
-	{{#each users}}
-	<li>
-		{{user}}
-		{{> posters}}
-	</li>
-	{{/each}}
-	</ul>
-</template>
+				<div class="footer">
+					<img class="home" src="/assets/home.png"/>
+					<img class="capture" src="/assets/cam_big.png"/>
+				</div>
 
-<template name="posters">
-	<ul>
-		{{#each posters}}
-		<li>
-			<img src="{{file}}" alt="{{owner}}"/>
-		</li>
-		{{/each}}
-	</ul>
-</template>
+				<div id="dialog" title="Remind Me">
+
+					<ol id="selectable">
+						<li class="ui-widget-content">Tonight</li>
+						<li class="ui-widget-content">Tomorrow</li>
+						<li style="margin-bottom:25px;" class="ui-widget-content">Thrusday</li>
+						<li class="ui-widget-content">ADD INFO NOW</li>
+					</ol>
+				</div>
+			</div>
+			<div class="content">    
+				<div class="header">
+					<img class="search" src="/assets/search.png"/>
+					<img class="posterize_logo" src="/assets/posterize_small.png"/>
+					<img class="capture_small" src="/assets/cam_small.png"/>
+				</div>
+
+
+
+				<div class="posters">
+					<div class="subheader">Snapped Today</div>
+					<div class="scrollable">
+						<img src="/posters/sample_poster.png"/>
+						<img src="/posters/IMG_2974.JPG"/>
+						<img src="/posters/IMG_2975.JPG"/>
+						<img src="/posters/IMG_2976.JPG"/>
+						<img src="/posters/IMG_2977.JPG"/>
+						<img src="/posters/IMG_2978.JPG"/>
+					</div>
+					<div class="subheader">Snapped Yesterday</div>
+					<div class="scrollable">
+						<img src="/posters/IMG_2974.JPG"/>
+						<img src="/posters/IMG_2975.JPG"/>
+						<img src="/posters/IMG_2976.JPG"/>
+						<img src="/posters/IMG_2977.JPG"/>
+						<img src="/posters/IMG_2978.JPG"/>
+					</div>
+					<div class="subheader">Snapped Wednesday</div>
+					<div class="scrollable">
+						<img src="/posters/IMG_2974.JPG"/>
+						<img src="/posters/IMG_2975.JPG"/>
+						<img src="/posters/IMG_2976.JPG"/>
+						<img src="/posters/IMG_2977.JPG"/>
+						<img src="/posters/IMG_2978.JPG"/>
+					</div>
+				</div>
+
+				<div id="from_home_poster" class="poster_detail_header">
+					<img class="left_icon" src="/assets/home_back.png"/>
+					<img class="centered_icon" src="/assets/posterize_small.png"/>
+					<img class="right_icon" src="/assets/edit.png"/>
+				</div>
+
+				<div class="poster_view hidden">
+					<div class="poster_img">
+						<img src="/posters/sample_poster.png"/>
+					</div>
+					<div>
+						<span class="title">JAZZ CONCERT</span> 
+						<span class="detail">77 Mass. Ave., Cambridge, MA</span>
+						<span class="detail">9:00 PM</span>
+						<span class="notes">"My favourite jazz band! First time in town."</span>
+						<div class="share">
+							<img class="small_icon" src="/assets/facebook.png"/>
+							<img class="small_icon" src="/assets/twitter.png"/>
+							<img class="small_icon" src="/assets/google.png"/>
+							<img class="small_icon" src="/assets/calendar.png"/>
+						</div>
+					</div>
+				</div>
+				<div class="posters_search_page">
+					<div class="accent-font mineall">
+						<div class="up">Mine</div><div class="down">All</div>
+					</div>
+					<div class="results accent-font"><div>Search results</div>
+					<div class="x">&#10006;</div></div>
+					<div class="subheader">Happening Today</div>
+					<div class="scrollable">
+						<img src="/posters/Christmas Lights 2012-01.jpg"/>
+						<img src="/posters/Circle-Gala-Poster.png"/>
+						<img src="/posters/BallRoomDance.JPG"/>
+						<img src="/posters/IMG_2974.JPG"/>
+						<img src="/posters/IMG_2975.JPG"/>
+						<img src="/posters/IMG_2976.JPG"/>
+					</div>
+					<div class="subheader">Happening Tomorrow</div>
+					<div class="scrollable">
+						<img src="/posters/Star-Wars-Retro-Wrestling-Posters-02.jpg"/>
+						<img src="/posters/Youth Festival Poster 2012 for Web.jpg"/>
+						<img src="/posters/environmentalrevolutionposterpx-13892784218nkg4.jpg"/>
+						<img src="/posters/filmFestivalPosters12.jpg"/>
+					</div>
+					<div class="subheader">Happening Saturday</div>
+					<div class="scrollable">
+						<img src="/posters/IMG_2977.JPG"/>
+						<img src="/posters/IMG_2978.JPG"/>
+						<img src="/posters/IMG_3696.jpeg"/>
+						<img src="/posters/JamSession.JPG"/>
+						<img src="/posters/PowerYoga.JPG"/>
+					</div>
+				</div>   
+
+
+				<div class="header_edit">
+					<img class="left_icon" src="/assets/home_back.png"/>
+					<img class="centered_icon" src="/assets/posterize_small.png"/>
+					<img class="right_icon" src="/assets/trash.png"/>       </div>
+
+					<div class="editView"> 
+						<div class="poster_img_edit">
+							<img src="/posters/sample_poster.png"/>
+						</div>
+						<p><span class="label">Title:</span> <input type="text" ></p>
+						<p><span class="label">Tags:</span><input type="text" ></p>
+						<p><span class="label">Where:</span> <input type="text"></p>
+						<p><span class="label">Date:</span> <input type="text" id="datepicker"></p>
+						<p><span class="label">Time:</span><input type="text" id="timepicker"></p>
+						<p><span class="label">Notes:</span> <textarea rows="3" cols="22"></textarea></p>
+						<span class="saveButton">SAVE</span>
+
+					</div>
+
+					<div class="searchView"> 
+						<p><span class="label_big">&nbsp;</span></p>
+						<p><span class="label_big">TAGS:</span></p>
+						<p>
+							<span class="tags">party</span><span class="tags">concert</span>
+							<span class="tags">jazz</span><span class="tags">blues</span>
+						</p>
+						<p><span class="label_big">NEAR:</span></p>
+						<p><input type="text" placeholder="Select a Location" ></p>
+						<p><span class="label_big">DATE:</span></p>
+						<p><span class="label">From:</span> <input type="text" id="datepicker"></p>
+						<p><span class="label">To:</span> <input type="text" id="datepicker"></p>
+
+						<span class="searchButton">SEARCH</span>
+						<span class="cancelButton">CANCEL</span>
+
+
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+
+
+
+	</body>
