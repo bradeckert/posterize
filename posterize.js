@@ -3,7 +3,23 @@ Posters = new Meteor.Collection("posters");
 
 if (Meteor.isClient) {
   //temp user name
-  Session.set('current_user', "Joe");
+  Session.set('current_user', "DavidKarger");
+  Session.set('mine', true);
+
+  Template.poster_row.posters = function () {
+    if (Session.get('mine')) {
+      return Posters.find({owner: Session.get('current_user')});
+    } else {
+      return Posters.find({});
+    }
+  };
+
+
+  Template.poster.events({
+    'click': function () {
+      Session.set("selected_poster", this._id);
+    }
+  });
 
   // remove a poster
   // Template.posters.events({
@@ -114,7 +130,13 @@ if (Meteor.isServer) {
     Posters.remove({});
     if (Users.find({}).count() === 0) {
       Users.insert({user: "DavidKarger", pw: "hello"});
-      Posters.insert({owner: "DavidKarger", file: "/posters/poster69.jpg"});
+      Posters.insert({owner: "DavidKarger", file: "/posters/sample_poster.png"});
+      Posters.insert({owner: "DavidKarger", file: "/posters/IMG_2974.JPG"});
+      Posters.insert({owner: "DavidKarger", file: "/posters/IMG_2975.JPG"});
+      Posters.insert({owner: "DavidKarger", file: "/posters/IMG_2976.JPG"});
+      Posters.insert({owner: "DavidKarger", file: "/posters/IMG_2977.JPG"});
+      Posters.insert({owner: "DavidKarger", file: "/posters/IMG_2978.JPG"});
+
 
       Users.insert({user: "RobMiller", pw: "hello"});
       Posters.insert({owner: "RobMiller", file: "/posters/newhope.jpg"});

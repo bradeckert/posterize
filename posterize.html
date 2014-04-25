@@ -44,30 +44,11 @@
 
 				<div class="posters">
 					<div class="subheader">Snapped Today</div>
-					<div class="scrollable">
-						<img src="/posters/sample_poster.png"/>
-						<img src="/posters/IMG_2974.JPG"/>
-						<img src="/posters/IMG_2975.JPG"/>
-						<img src="/posters/IMG_2976.JPG"/>
-						<img src="/posters/IMG_2977.JPG"/>
-						<img src="/posters/IMG_2978.JPG"/>
-					</div>
+						{{> poster_row}}
 					<div class="subheader">Snapped Yesterday</div>
-					<div class="scrollable">
-						<img src="/posters/IMG_2974.JPG"/>
-						<img src="/posters/IMG_2975.JPG"/>
-						<img src="/posters/IMG_2976.JPG"/>
-						<img src="/posters/IMG_2977.JPG"/>
-						<img src="/posters/IMG_2978.JPG"/>
-					</div>
+						{{> poster_row}}
 					<div class="subheader">Snapped Wednesday</div>
-					<div class="scrollable">
-						<img src="/posters/IMG_2974.JPG"/>
-						<img src="/posters/IMG_2975.JPG"/>
-						<img src="/posters/IMG_2976.JPG"/>
-						<img src="/posters/IMG_2977.JPG"/>
-						<img src="/posters/IMG_2978.JPG"/>
-					</div>
+						{{> poster_row}}
 				</div>
 
 				<div id="from_home_poster" class="poster_detail_header">
@@ -161,10 +142,7 @@
 						<span class="searchButton">SEARCH</span>
 						<span class="cancelButton">CANCEL</span>
 
-
 					</div>
-
-
 				</div>
 			</div>
 		</div>
@@ -172,3 +150,16 @@
 
 
 	</body>
+
+
+	<template name="poster_row">
+		<div class="scrollable">
+			{{#each posters}}
+				{{>poster}}
+			{{/each}}
+		</div>
+	</template>
+
+	<template name="poster">
+		<img src="{{file}}" alt="{{owner}}"/>
+	</template>	

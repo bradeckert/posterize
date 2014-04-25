@@ -169,6 +169,13 @@ body{
     cursor: pointer;
 }
 
+.home_poster {
+    display: inline;
+    height: 150px;
+    padding: 5px;
+    cursor: pointer;
+}
+
 .subheader {
     font-variant:small-caps;
     margin: 0;
