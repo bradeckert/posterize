@@ -2,6 +2,17 @@ Users = new Meteor.Collection("users");
 Posters = new Meteor.Collection("posters");
 
 if (Meteor.isClient) {
+  Router.map(function() {
+    this.route('home');
+    this.route('camera');
+    this.route('intro', {path: '/'});
+    this.route('poster_info');
+    this.route('search_results');
+    this.route('search');
+    this.route('add_info');
+  });
+
+
   //temp user name
   Session.set('current_user', "DavidKarger");
   Session.set('mine', true);
@@ -20,6 +31,7 @@ if (Meteor.isClient) {
       Session.set("selected_poster", this._id);
     }
   });
+
 
   //Template.
 
