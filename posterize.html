@@ -44,11 +44,11 @@
 
 				<div class="posters">
 					<div class="subheader">Snapped Today</div>
-						{{> poster_row}}
+					{{> poster_row}}
 					<div class="subheader">Snapped Yesterday</div>
-						{{> poster_row}}
+					{{> poster_row}}
 					<div class="subheader">Snapped Wednesday</div>
-						{{> poster_row}}
+					{{> poster_row}}
 				</div>
 
 				<div id="from_home_poster" class="poster_detail_header">
@@ -110,56 +110,58 @@
 				<div class="header_edit">
 					<img class="left_icon" src="/assets/home_back.png"/>
 					<img class="centered_icon" src="/assets/posterize_small.png"/>
-					<img class="right_icon" src="/assets/trash.png"/>       </div>
+					<img class="right_icon" src="/assets/trash.png"/>
+				</div>
 
-					<div class="editView"> 
-						<div class="poster_img_edit">
-							<img src="/posters/sample_poster.png"/>
-						</div>
-						<p><span class="label">Title:</span> <input type="text" ></p>
-						<p><span class="label">Tags:</span><input type="text" ></p>
-						<p><span class="label">Where:</span> <input type="text"></p>
-						<p><span class="label">Date:</span> <input type="text" id="datepicker"></p>
-						<p><span class="label">Time:</span><input type="text" id="timepicker"></p>
-						<p><span class="label">Notes:</span> <textarea rows="3" cols="22"></textarea></p>
-						<span class="saveButton">SAVE</span>
-
+				<div class="editView"> 
+					<div class="poster_img_edit">
+						<img src="/posters/sample_poster.png"/>
 					</div>
+					<p><span class="label">Title:</span> <input type="text" ></p>
+					<p><span class="label">Tags:</span><input type="text" ></p>
+					<p><span class="label">Where:</span> <input type="text"></p>
+					<p><span class="label">Date:</span> <input type="text" id="datepicker"></p>
+					<p><span class="label">Time:</span><input type="text" id="timepicker"></p>
+					<p><span class="label">Notes:</span> <textarea rows="3" cols="22"></textarea></p>
+					<span class="saveButton">SAVE</span>
 
-					<div class="searchView"> 
-						<p><span class="label_big">&nbsp;</span></p>
-						<p><span class="label_big">TAGS:</span></p>
-						<p>
-							<span class="tags">party</span><span class="tags">concert</span>
-							<span class="tags">jazz</span><span class="tags">blues</span>
-						</p>
-						<p><span class="label_big">NEAR:</span></p>
-						<p><input type="text" placeholder="Select a Location" ></p>
-						<p><span class="label_big">DATE:</span></p>
-						<p><span class="label">From:</span> <input type="text" id="datepicker"></p>
-						<p><span class="label">To:</span> <input type="text" id="datepicker"></p>
+				</div>
 
-						<span class="searchButton">SEARCH</span>
-						<span class="cancelButton">CANCEL</span>
+				<div class="searchView"> 
+					<p><span class="label_big">&nbsp;</span></p>
+					<p><span class="label_big">TAGS:</span></p>
+					<p>
+						<span class="tags">party</span><span class="tags">concert</span>
+						<span class="tags">jazz</span><span class="tags">blues</span>
+					</p>
+					<p><span class="label_big">NEAR:</span></p>
+					<p><input type="text" placeholder="Select a Location" ></p>
+					<p><span class="label_big">DATE:</span></p>
+					<p><span class="label">From:</span> <input type="text" id="datepicker"></p>
+					<p><span class="label">To:</span> <input type="text" id="datepicker"></p>
 
-					</div>
+					<span class="searchButton">SEARCH</span>
+					<span class="cancelButton">CANCEL</span>
+
 				</div>
 			</div>
 		</div>
+	</div>
+
+</body>
 
 
+<template name="poster_row">
+	<div class="scrollable">
+		{{#each posters}}
+			{{> poster}}
+		{{/each}}
+	</div>
+</template>
 
-	</body>
+<template name="poster">
+	<img src="{{file}}" alt="{{owner}}"/>
+</template>	
 
+<!--<template name="header">-->
 
-	<template name="poster_row">
-		<div class="scrollable">
-			{{#each posters}}
-				{{>poster}}
-			{{/each}}
-		</div>
-	</template>
-
-	<template name="poster">
-		<img src="{{file}}" alt="{{owner}}"/>
-	</template>	

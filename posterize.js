@@ -21,6 +21,8 @@ if (Meteor.isClient) {
     }
   });
 
+  //Template.
+
   // remove a poster
   // Template.posters.events({
   //   'click': function () {
@@ -53,7 +55,8 @@ if (Meteor.isServer) {
 
       // add a poster entry with username as owner
       addPoster: function( username, filename ) {
-        Posters.insert({owner: username, file: filename});
+        var today = new Date();
+        Posters.insert({owner: username, file: filename, snapped: today});
       },
 
       // remove poster entry
@@ -87,7 +90,8 @@ if (Meteor.isServer) {
                 where: poster.where, 
                 date: poster.date, 
                 time: poster.time, 
-                notes: poster.notes
+                notes: poster.notes,
+                snapped: poster.snapped
               };
       },
 
@@ -130,12 +134,14 @@ if (Meteor.isServer) {
     Posters.remove({});
     if (Users.find({}).count() === 0) {
       Users.insert({user: "DavidKarger", pw: "hello"});
-      Posters.insert({owner: "DavidKarger", file: "/posters/sample_poster.png"});
-      Posters.insert({owner: "DavidKarger", file: "/posters/IMG_2974.JPG"});
-      Posters.insert({owner: "DavidKarger", file: "/posters/IMG_2975.JPG"});
-      Posters.insert({owner: "DavidKarger", file: "/posters/IMG_2976.JPG"});
-      Posters.insert({owner: "DavidKarger", file: "/posters/IMG_2977.JPG"});
-      Posters.insert({owner: "DavidKarger", file: "/posters/IMG_2978.JPG"});
+      var today = new Date();
+      var yesterday = new Date(today-1);
+      Posters.insert({owner: "DavidKarger", file: "/posters/sample_poster.png", snapped: today});
+      Posters.insert({owner: "DavidKarger", file: "/posters/IMG_2974.JPG", snapped: today});
+      Posters.insert({owner: "DavidKarger", file: "/posters/IMG_2975.JPG", snapped: yesterday});
+      Posters.insert({owner: "DavidKarger", file: "/posters/IMG_2976.JPG", snapped: yesterday});
+      Posters.insert({owner: "DavidKarger", file: "/posters/IMG_2977.JPG", snapped: yesterday});
+      Posters.insert({owner: "DavidKarger", file: "/posters/IMG_2978.JPG", snapped: yesterday});
 
 
       Users.insert({user: "RobMiller", pw: "hello"});
