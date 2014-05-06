@@ -17,10 +17,7 @@ if (Meteor.isClient) {
     this.route('camera');
     this.route('intro', {path: '/'});
     this.route('poster_info');
-    this.route('search_results');
-    this.route('search');
-    this.route('add_info');
-    this.route('header');
+    this.route('edit_poster_info');
   });
 
 
@@ -31,6 +28,7 @@ if (Meteor.isClient) {
   // When this is set, home page displays as search page
   Session.set('search_criteria', null);
 
+  // HOME / SEARCH -------------------------------------------------------------
   var get_search_result = function() {
     // TODO: use search_criteria
     if (Session.get('mine')) {
@@ -59,55 +57,6 @@ if (Meteor.isClient) {
     }
     return rows;
   };
-
-  Template.camera.rendered = function() {
-    $("#save").button();
-    $("#edit").button();
-    $("#discard").button();
-  };
-
-  Template.camera.dialog_status = function() {
-    if (!Session.get("about_to_save_new")) return "hidden";
-    return "";
-  };
-
-  var save_new_poster = function() {
-    if (!$(".myFileInput").get(0).files) {
-      alert("No file chosen!");
-    }
-    var file = $(".myFileInput").get(0).files[0];
-    console.log("Saving file: " + file);
-    Images.insert(file, function (err, fileObj) {
-      if (!err) {
-        var id = Posters.insert(
-          {owner: Session.get('current_user'),
-           file: fileObj._id,
-           snapped: new Date()});
-        Session.set("selected_poster", id);
-        console.log("Stored as : " + fileObj);
-      } else {
-        console.log("Error");
-      }
-      fO = fileObj;
-    }); };
-
-  Template.camera.events({
-    'click .camera_button': function() {
-      Session.set("about_to_save_new", true); },
-    'click #discard' : function() {
-      Session.set("about_to_save_new", false); },
-    'click .x' : function() {
-      Session.set("about_to_save_new", false); },
-    'click #save' : function () {
-      save_new_poster();
-      Session.set("about_to_save_new", false);
-    },
-    'click #edit' : function () {
-      save_new_poster();
-      Session.set("about_to_save_new", false);
-      //TODO: go to poster page
-    }
-  });
 
   Template.home.search_label = function() {
     console.log("Getting search label");
@@ -150,10 +99,13 @@ if (Meteor.isClient) {
     }
   });
 
+  var url_for_poster = function(poster) {
+    if (poster.test_url) { return poster.test_url; }
+    else { return Images.findOne(poster.file).url(); }
+  };
+
   Template.poster.url = function() {
-    console.log("Calling url");
-    if (this.test_url) { return this.test_url; }
-    else { return Images.findOne(this.file).url(); }
+    return url_for_poster(this);
   };
 
   Template.poster.events({
@@ -162,29 +114,73 @@ if (Meteor.isClient) {
     }
   });
 
-  // Template.test_form.events({
-  //   'change .myFileInput': function(event, template) {
-  //     var files = event.target.files;
-  //     for (var i = 0, ln = files.length; i < ln; i++) {
-  //       console.log("Saving file: " + files[i]);
-  //       Images.insert(files[i], function (err, fileObj) {
-  //         if (!err) {
-  //           Posters.insert(
-  //             {owner: Session.get('current_user'),
-  //              file: fileObj._id,
-  //              snapped: new Date()});
-  //           console.log("Stored as : " + fileObj);
-  //         } else {
-  //           console.log("Error");
-  //         }
-  //         fO = fileObj;
-  //         //Inserted new doc with ID fileObj._id, and kicked off the data upload using HTTP
-  //       });
-  //     }
-  //   }
-  // });
+  // VIEW POSTER ---------------------------------------------------------------
+  Template.poster_info.poster = function() {
+    var res = Posters.findOne(Session.get("selected_poster"));
+    res["url"] = url_for_poster(res);
+    return res;
+  };
 
-  //Template.
+   Template.edit_poster_info.poster = function() {
+    var res = Posters.findOne(Session.get("selected_poster"));
+    res["url"] = url_for_poster(res);
+    return res;
+  };
+
+  Template.edit_poster_info.rendered = function() {
+    $("#save").button();
+    $("#cancel").button();
+  };
+
+  // CAMERA --------------------------------------------------------------------
+  var save_new_poster = function() {
+    // TODO(Cagri): change to uploda from canvas instead
+    if (!$(".myFileInput").get(0).files) {
+      alert("No file chosen!");
+    }
+    var file = $(".myFileInput").get(0).files[0];
+    console.log("Saving file: " + file);
+    Images.insert(file, function (err, fileObj) {
+      if (!err) {
+        var id = Posters.insert(
+          {owner: Session.get('current_user'),
+           file: fileObj._id,
+           snapped: new Date()});
+        Session.set("selected_poster", id);
+        console.log("Stored as : " + fileObj);
+      } else {
+        console.log("Error");
+      }
+      fO = fileObj;
+    }); };
+
+  Template.camera.rendered = function() {
+    $("#save").button();
+    $("#edit").button();
+    $("#discard").button();
+  };
+
+  Template.camera.dialog_status = function() {
+    if (!Session.get("about_to_save_new")) return "hidden";
+    return "";
+  };
+
+  Template.camera.events({
+    'click .camera_button': function() {
+      Session.set("about_to_save_new", true); },
+    'click #discard' : function() {
+      Session.set("about_to_save_new", false); },
+    'click .x' : function() {
+      Session.set("about_to_save_new", false); },
+    'click #save' : function () {
+      save_new_poster();
+      Session.set("about_to_save_new", false);
+    },
+    'click #edit' : function () {
+      save_new_poster();
+      Session.set("about_to_save_new", false);
+    }
+  });
 
   // remove a poster
   // Template.posters.events({

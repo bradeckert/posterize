@@ -43,11 +43,13 @@
       </div>
     </header>
 
+    <!-- Only displays if search filter is on -->
     <div class="results accent-font">
       Search results
       <div id="x" class="x">&#10006;</div>
     </div>
 
+    <!-- Mine/All toggle -->
     <div class="rdclass-container">
       <div class="radio-wrap half">
         <input type="radio" name="mineall" value="mine"
@@ -64,8 +66,13 @@
 </template>
 
 
+<template name="test_form">
+  File: <input class="myFileInput" type="file" />
+</template>
+
 <!-- CAMERA PAGE -->
 <template name="camera">
+  <!-- TODO(Cagri): replace with camera integration -->
   {{> test_form}}
 
   <div class="fixed-bottom">
@@ -82,6 +89,8 @@
     </header>
   </div>
 
+  <!-- Only appears after snapping -->
+  <!-- TODO(Brad): optimize appearance for phone -->
   <div id="dialog" class="{{dialog_status}}" title="Remind Me">
     <div class="dialog-header">
       <div>Snapped a new poster...</div>
@@ -101,12 +110,10 @@
   </div>
 </template>
 
-
-<template name="test_form">
-  File: <input class="myFileInput" type="file" />
-</template>
-
 <!-- SEARCH SETTINGS -->
+<!-- TODO(Brad): fix up appearance and set "search_criterion" based on this,
+                 if the search is on - populate with current "search_criterion"
+                 values -->
 <template name="search_settings">
   <div class="searchView">
     <p><span class="label_big">&nbsp;</span></p>
@@ -148,13 +155,9 @@
     {{> poster_row}}
     {{/each}}
   </div>
-<!--    <div class="subheader">Snapped Yesterday</div>
-    {{> poster_row}}
-    <div class="subheader">Snapped Wednesday</div>
-    {{> poster_row}}
-  </div> -->
   </div>
 
+  <!-- Only appears when search is pressed -->
   <div id="dialog" class="hidden search" title="Search">
     <div class="dialog-header">
       <div>Search for posters...</div>
@@ -169,101 +172,128 @@
 </template>
 
 
+<!-- HEADER FOR VIEW PAGE -->
+<template name="header_poster_info">
+  <div class="fixed-top">
+    <header class="pheader" role="navigation">
+      <img class="posterize_logo" src="/assets/posterize_small.png"/>
 
+      <a href="{{pathFor 'home'}}">
+        <div class="left-button pbutton">
+	  <img src="/assets/back.png"/>
+        </div>
+      </a>
 
+      <a href="{{pathFor 'edit_poster_info'}}">
+        <div class="right-button pbutton">
+          <img src="/assets/edit.png"/>
+        </div>
+      </a>
+    </header>
+  </div>
+</template>
 
 <!-- POSTER VIEW PAGE -->
 <template name="poster_info">
-	<div id="from_home_poster" class="poster_detail_header">
-		<a href="{{pathFor 'home'}}">
-			<img class="left_icon" src="/assets/home_back.png"/>
-		</a>
-		<img class="centered_icon" src="/assets/posterize_small.png"/>
-		<a href="{{pathFor 'add_info'}}">
-			<img class="right_icon" src="/assets/edit.png"/>
-		</a>
-	</div>
+  <div class="view-container view">
+  {{> header_poster_info }}
 
-	<div class="poster_view">
-		<div class="poster_img">
-			<img src="/posters/sample_poster.png"/>
-		</div>
-		<div>
-			<span class="title">JAZZ CONCERT</span>
-			<span class="detail">77 Mass. Ave., Cambridge, MA</span>
-			<span class="detail">9:00 PM</span>
-			<span class="notes">"My favourite jazz band! First time in town."</span>
-			<div class="share">
-				<img class="small_icon" src="/assets/facebook.png"/>
-				<img class="small_icon" src="/assets/twitter.png"/>
-				<img class="small_icon" src="/assets/google.png"/>
-				<img class="small_icon" src="/assets/calendar.png"/>
-			</div>
-		</div>
+  <div class="below-header">
+    <div class="poster_view">
+      <div class="poster_img">
+	<img src="{{poster.url}}"/>
+      </div>
+
+      <div class="container">
+        <!-- TODO(Brad): fill in based on true info,
+                         should probably have placeholders for missing data
+                         to indicate that it can be filled in -->
+	<div class="title">Jazz Concert</div>
+	<div class="detail">77 Mass. Ave., Cambridge, MA</div>
+	<div class="detail">9:00 PM</div>
+	<div class="notes">"My favourite jazz band! First time in town."</div>
+
+	<div class="share">
+	  <img class="small_icon" src="/assets/facebook.png"/>
+	  <img class="small_icon" src="/assets/twitter.png"/>
+	  <img class="small_icon" src="/assets/google.png"/>
+	  <img class="small_icon" src="/assets/calendar.png"/>
 	</div>
+      </div>
+    </div>
+  </div>
+  </div>
 </template>
 
-<!-- SEARCH RESULTS PAGE -->
-<template name="search_results">
-	<div class="posters_search_page">
-		<div class="accent-font mineall">
-			<div class="up">Mine</div><div class="down">All</div>
-		</div>
-		<div class="results accent-font">
-			<div>Search results</div>
-			<a href="{{pathFor 'home'}}">
-				<div class="x">&#10006;</div>
-			</a>
-		</div>
-		<div class="subheader">Happening Today</div>
-		<div class="scrollable">
-			<img src="/posters/Christmas Lights 2012-01.jpg"/>
-			<img src="/posters/Circle-Gala-Poster.png"/>
-			<img src="/posters/BallRoomDance.JPG"/>
-			<img src="/posters/IMG_2974.JPG"/>
-			<img src="/posters/IMG_2975.JPG"/>
-			<img src="/posters/IMG_2976.JPG"/>
-		</div>
-		<div class="subheader">Happening Tomorrow</div>
-		<div class="scrollable">
-			<img src="/posters/Star-Wars-Retro-Wrestling-Posters-02.jpg"/>
-			<img src="/posters/Youth Festival Poster 2012 for Web.jpg"/>
-			<img src="/posters/environmentalrevolutionposterpx-13892784218nkg4.jpg"/>
-			<img src="/posters/filmFestivalPosters12.jpg"/>
-		</div>
-		<div class="subheader">Happening Saturday</div>
-		<div class="scrollable">
-			<img src="/posters/IMG_2977.JPG"/>
-			<img src="/posters/IMG_2978.JPG"/>
-			<img src="/posters/IMG_3696.jpeg"/>
-			<img src="/posters/JamSession.JPG"/>
-			<img src="/posters/PowerYoga.JPG"/>
-		</div>
-	</div>
+<!-- HEADER FOR EDIT PAGE -->
+<template name="header_poster_edit">
+  <div class="fixed-top">
+    <header class="pheader" role="navigation">
+      <img class="posterize_logo" src="/assets/posterize_small.png"/>
+
+      <!-- TODO(Brad): path should be set to home or camera,
+                       depending on the entrance point -->
+      <a href="">
+        <div class="left-button pbutton">
+	  <img src="/assets/back.png"/>
+        </div>
+      </a>
+
+      <!-- TODO(Brad): implement deletion
+                       (would be good to ask for confirmation) -->
+      <div class="right-button pbutton">
+        <img src="/assets/trash.png"/>
+      </div>
+    </header>
+  </div>
 </template>
 
 <!-- ADD INFO PAGE -->
-<template name="add_info">
-	<div class="header_edit">
-		<a href="{{pathFor 'home'}}">
-			<img class="left_icon" src="/assets/home_back.png"/>
-		</a>
-		<img class="centered_icon" src="/assets/posterize_small.png"/>
-		<img class="right_icon" src="/assets/trash.png"/>
-	</div>
+<!-- TODO(Brad): Implement Edit page -->
+<template name="edit_poster_info">
+  <div class="view-container edit">
+    {{> header_poster_edit }}
 
-	<div class="editView">
-		<div class="poster_img_edit">
-			<img src="/posters/sample_poster.png"/>
-		</div>
-		<p><span class="label">Title:</span> <input type="text" ></p>
-		<p><span class="label">Tags:</span><input type="text" ></p>
-		<p><span class="label">Where:</span> <input type="text"></p>
-		<p><span class="label">Date:</span> <input type="text" id="datepicker"></p>
-		<p><span class="label">Time:</span><input type="text" id="timepicker"></p>
-		<p><span class="label">Notes:</span> <textarea rows="3" cols="22"></textarea></p>
-		<a href="{{pathFor 'poster_info'}}">
-			<span class="saveButton">SAVE</span>
-		</a>
-	</div>
+    <div class="below-header">
+      <div class="poster_view">
+        <div class="poster_img">
+	  <img src="{{poster.url}}"/>
+        </div>
+
+        <div class="container">
+	  <div>
+            <span class="label">Title:</span> <input type="text"/>
+          </div>
+
+	  <div>
+            <span class="label">Tags:</span><input type="text"/>
+          </div>
+
+	  <div>
+            <span class="label">Where:</span> <input type="text"/>
+          </div>
+
+	  <div>
+            <span class="label">Date:</span> <input type="text" id="datepicker"/>
+          </div>
+
+	  <div>
+            <span class="label">Time:</span><input type="text" id="timepicker"/>
+          </div>
+
+	  <div>
+            <span class="label">Notes:</span> <textarea rows="3" cols="22"></textarea>
+          </div>
+          <!-- TODO(Brad): should provide (at least placeholder) privacy controls:
+                           Let others edit, etc. -->
+
+          <!-- TODO(Brad): implement -->
+	  <a href="{{pathFor 'poster_info'}}">
+	    <div id="save">Save</div>
+	    <div id="cancel">Cancel</div>
+	  </a>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
