@@ -1,15 +1,18 @@
 <head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
 	<title>posterize</title>
 	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
 	<link rel="stylesheet" href="posterize.css" />
-	<!-- HTML from MASHA -->
-	<link href="http://fonts.googleapis.com/css?family=Patrick+Hand+SC"
-	rel="stylesheet" type="text/css" />
-	<!-- END of HTML from MASHA -->
+	<link href="http://fonts.googleapis.com/css?family=Patrick+Hand+SC" rel="stylesheet" type="text/css" />
+        <script type="text/javascript">
+          var fO = null;
+          var ps = null;
+        </script>
 </head>
-
 <body>
 	<!-- Now dynamically filled in -->
 </body>
@@ -17,65 +20,157 @@
 
 <!-- INTRO PAGE -->
 <template name="intro">
-	<a href="{{pathFor 'camera'}}">
-		<div class="intro"></div>
-	</a>
+  <a href="{{pathFor 'camera'}}">
+    <div class="intro"><img src="/assets/posterize_big.png"/></div>
+  </a>
 </template>
+
+
+<!-- HEADER FOR HOME / SEARCH -->
+<template name="header_home">
+  <div class="fixed-top">
+    <header class="pheader" role="navigation">
+      <img class="posterize_logo" src="/assets/posterize_small.png"/>
+
+      <a href="{{pathFor 'camera'}}">
+        <div class="left-button pbutton">
+	  <img src="/assets/cam_small.png"/>
+        </div>
+      </a>
+
+      <div class="right-button pbutton">
+        <img src="/assets/search.png"/>
+      </div>
+    </header>
+
+    <div class="results accent-font">
+      Search results
+      <div id="x" class="x">&#10006;</div>
+    </div>
+
+    <div class="rdclass-container">
+      <div class="radio-wrap half">
+        <input type="radio" name="mineall" value="mine"
+               class="custom-radio" id="mine" checked="yes" />
+        <label for="mine">Mine</label>
+      </div>
+      <div class="radio-wrap half">
+        <input type="radio" name="mineall" value="all"
+               class="custom-radio" id="all" />
+        <label for="all">All</label>
+      </div>
+    </div>
+  </div>
+</template>
+
 
 <!-- CAMERA PAGE -->
 <template name="camera">
-	<div class="content_capture">
-		<img class="dummy_poster" src="/assets/sample_poster.png"/>
+  {{> test_form}}
 
-		<div class="footer">
-			<a href="{{pathFor 'home'}}">
-				<img class="home" src="/assets/home.png"/>
-			</a>
-			<img class="capture" src="/assets/cam_big.png"/>
-		</div>
+  <div class="fixed-bottom">
+    <header class="pheader" role="navigation">
+      <div class="camera_button pbutton">
+	<img src="/assets/cam_big.png"/>
+      </div>
 
-		<div id="dialog" title="Remind Me">
+      <a href="{{pathFor 'home'}}">
+        <div class="right-button pbutton">
+	  <img src="/assets/home.png"/>
+        </div>
+      </a>
+    </header>
+  </div>
 
-			<ol id="selectable">
-				<a href="{{pathFor 'home'}}">
-					<li class="ui-widget-content">Tonight</li>
-				</a>
-				<a href="{{pathFor 'home'}}">
-					<li class="ui-widget-content">Tomorrow</li>
-				</a>
-				<a href="{{pathFor 'home'}}">
-					<li style="margin-bottom:25px;" class="ui-widget-content">Thursday</li>
-				</a>
-				<a href="{{pathFor 'add_info'}}">
-					<li class="ui-widget-content">ADD INFO NOW</li>
-				</a>
-			</ol>
-		</div>
-	</div>
+  <div id="dialog" class="{{dialog_status}}" title="Remind Me">
+    <div class="dialog-header">
+      <div>Snapped a new poster...</div>
+      <div class="x">&#10006;</div>
+    </div>
+    <div class="container">
+      <div>
+        <div> Remind me: </div>
+        <input type="checkbox" name="vehicle" value="tonight"/>Tonight<br/>
+        <input type="checkbox" name="vehicle" value="tomorrow"/>Tomorrow<br/>
+        <input type="checkbox" name="vehicle" value="tomorrow"/>Thursday<br/>
+      </div>
+      <a href="{{pathFor 'home'}}"><div id="save">Save</div></a>
+      <a href="{{pathFor 'poster_info'}}"><div id="edit"> Edit</div></a>
+      <div id="discard">Discard</div>
+    </div>
+  </div>
 </template>
 
 
-<!-- HOME PAGE -->
+<template name="test_form">
+  File: <input class="myFileInput" type="file" />
+</template>
+
+<!-- SEARCH SETTINGS -->
+<template name="search_settings">
+  <div class="searchView">
+    <p><span class="label_big">&nbsp;</span></p>
+    <p><span class="label_big">TAGS:</span></p>
+    <p>
+      <span class="tags">party</span><span class="tags">concert</span>
+      <span class="tags">jazz</span><span class="tags">blues</span>
+    </p>
+    <p><span class="label_big">NEAR:</span></p>
+    <p><input type="text" placeholder="Select a Location"/></p>
+    <p><span class="label_big">DATE:</span></p>
+    <p><span class="label">From:</span> <input type="text" id="datepicker"/></p>
+    <p><span class="label">To:</span> <input type="text" id="datepicker"/></p>
+  </div>
+</template>
+
+<template name="poster_row">
+  <div class="scrollable">
+    {{#each posters}}
+    <a href="{{pathFor 'poster_info'}}">
+      {{> poster}}
+    </a>
+    {{/each}}
+  </div>
+</template>
+
+<template name="poster">
+  <img src="{{url}}" alt="{{file}}"/>
+</template>
+
+<!-- HOME PAGE / SEARCH PAGE -->
 <template name="home">
-	<div class="header">
-		<a href="{{pathFor 'search'}}">
-			<img class="search" src="/assets/search.png"/>
-		</a>
-		<img class="posterize_logo" src="/assets/posterize_small.png"/>
-		<a href="{{pathFor 'camera'}}">
-			<img class="capture_small" src="/assets/cam_small.png"/>
-		</a>
-	</div>
+  <div class="home-container {{search_label}}">
+  {{> header_home}}
 
-	<div class="posters">
-		<div class="subheader">Snapped Today</div>
-		{{> poster_row}}
-		<div class="subheader">Snapped Yesterday</div>
-		{{> poster_row}}
-		<div class="subheader">Snapped Wednesday</div>
-		{{> poster_row}}
-	</div>
+  <div class="below-header">
+    {{#each rows}}
+    <div class="subheader">{{day}}</div>
+    {{> poster_row}}
+    {{/each}}
+  </div>
+<!--    <div class="subheader">Snapped Yesterday</div>
+    {{> poster_row}}
+    <div class="subheader">Snapped Wednesday</div>
+    {{> poster_row}}
+  </div> -->
+  </div>
+
+  <div id="dialog" class="hidden search" title="Search">
+    <div class="dialog-header">
+      <div>Search for posters...</div>
+      <div class="x">&#10006;</div>
+    </div>
+    <div class="container">
+      {{> search_settings}}
+      <div id="search">Search</div>
+      <div id="cancel">Cancel</div>
+    </div>
+  </div>
 </template>
+
+
+
+
 
 <!-- POSTER VIEW PAGE -->
 <template name="poster_info">
@@ -94,7 +189,7 @@
 			<img src="/posters/sample_poster.png"/>
 		</div>
 		<div>
-			<span class="title">JAZZ CONCERT</span> 
+			<span class="title">JAZZ CONCERT</span>
 			<span class="detail">77 Mass. Ave., Cambridge, MA</span>
 			<span class="detail">9:00 PM</span>
 			<span class="notes">"My favourite jazz band! First time in town."</span>
@@ -157,7 +252,7 @@
 		<img class="right_icon" src="/assets/trash.png"/>
 	</div>
 
-	<div class="editView"> 
+	<div class="editView">
 		<div class="poster_img_edit">
 			<img src="/posters/sample_poster.png"/>
 		</div>
@@ -172,51 +267,3 @@
 		</a>
 	</div>
 </template>
-
-<!-- SEARCH PAGE -->
-<template name="search">
-	<div class="searchView"> 
-		<p><span class="label_big">&nbsp;</span></p>
-		<p><span class="label_big">TAGS:</span></p>
-		<p>
-			<span class="tags">party</span><span class="tags">concert</span>
-			<span class="tags">jazz</span><span class="tags">blues</span>
-		</p>
-		<p><span class="label_big">NEAR:</span></p>
-		<p><input type="text" placeholder="Select a Location" ></p>
-		<p><span class="label_big">DATE:</span></p>
-		<p><span class="label">From:</span> <input type="text" id="datepicker"></p>
-		<p><span class="label">To:</span> <input type="text" id="datepicker"></p>
-		<a href="{{pathFor 'search_results'}}">
-			<span class="searchButton">SEARCH</span>
-		</a>
-		<a href="{{pathFor 'home'}}">
-			<span class="cancelButton">CANCEL</span>
-		</a>
-
-	</div>
-</template>
-
-
-
-
-
-
-<!-- HELPERS -->
-
-<template name="poster_row">
-	<div class="scrollable">
-		{{#each posters}}
-		<a href="{{pathFor 'poster_info'}}">
-			{{> poster}}
-		</a>
-		{{/each}}
-	</div>
-</template>
-
-<template name="poster">
-	<img src="{{file}}" alt="{{owner}}"/>
-</template>	
-
-<!--<template name="header">-->
-
