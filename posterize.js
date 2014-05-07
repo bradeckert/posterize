@@ -50,8 +50,19 @@ if (Meteor.isClient) {
         date_string = posters[p].snapped.toLocaleDateString();
         // TODO: change "Snapped on" to "Happening on " if search criteria
         // has a date attribute
-        rows.push({"day" : "Snapped on " + posters[p].snapped.toDateString(),
+        var today = new Date();
+        var yesterday = new Date();
+        yesterday.setDate(today.getDate() - 1);
+        if (posters[p].snapped.getDate() == today.getDate()) {
+          rows.push({"day" : "Snapped Today",
                    "posters": []});
+        } else if (posters[p].snapped.getDate() == yesterday.getDate()) {
+          rows.push({"day" : "Snapped Yesterday",
+                   "posters": []});
+        } else {
+          rows.push({"day" : "Snapped on " + posters[p].snapped.toDateString(),
+                   "posters": []});
+        }
       }
       rows[rows.length - 1].posters.push(posters[p]);
     }
@@ -285,7 +296,7 @@ Template.poster_info.hasDetail = function() {
       save_new_poster();
       Session.set("about_to_save_new", false);
       Session.set("came_to_edit_by", 'camera');
-      //TODO: make this less hacky
+      //TODO: make this less hacky, may not even be neccesary
       while(Session.get('selected_poster') == null) {}
       Router.go('edit_poster_info');
     }
@@ -388,7 +399,9 @@ if (Meteor.isServer) {
       Users.insert({user: "Masha", pw: "hello"});
       var today = new Date();
       var yesterday = new Date();
+      var twodaysback = new Date();
       yesterday.setDate(today.getDate() - 1);
+      twodaysback.setDate(today.getDate() - 2);
 
       Posters.insert({test_url: "/posters/IMG_3696.jpeg",
                       owner: "Masha", snapped: today, 
@@ -404,7 +417,7 @@ if (Meteor.isServer) {
       Posters.insert({test_url: "/posters/Youth Festival Poster 2012 for Web.jpg",
                       owner: "Masha", snapped: today});
       Posters.insert({test_url: "/posters/cool-poster-designs-34.jpg",
-                      owner: "Masha", snapped: today});
+                      owner: "Masha", snapped: twodaysback});
 
       Users.insert({owner: "Brad", pw: "hello"});
       Posters.insert({test_url: "/posters/BallRoomDance.JPG",
@@ -436,7 +449,7 @@ if (Meteor.isServer) {
       Posters.insert({test_url: "/posters/poster69.jpg",
                       owner: "Cagri", snapped: yesterday});
       Posters.insert({test_url: "/posters/sample_poster.png",
-                      owner: "Cagri", snapped: yesterday});
+                      owner: "Cagri", snapped: twodaysback});
     }
 
   });

@@ -147,14 +147,14 @@
 <!-- HOME PAGE / SEARCH PAGE -->
 <template name="home">
   <div class="home-container {{search_label}}">
-  {{> header_home}}
+	  {{> header_home}}
 
-  <div class="below-header">
-    {{#each rows}}
-    <div class="subheader">{{day}}</div>
-    {{> poster_row}}
-    {{/each}}
-  </div>
+	  <div class="below-header">
+	    {{#each rows}}
+	    	<div class="subheader">{{day}}</div>
+	    {{> poster_row}}
+	    {{/each}}
+	  </div>
   </div>
 
   <!-- Only appears when search is pressed -->
