@@ -108,6 +108,8 @@ if (Meteor.isClient) {
     return url_for_poster(this);
   };
 
+
+  //set selected poster
   Template.poster.events({
     'click': function () {
       Session.set("selected_poster", this._id);
@@ -132,53 +134,37 @@ Template.poster_info.hasDetail = function() {
 
   Template.poster_info.hasTitle = function() {
     var res = Posters.findOne(Session.get("selected_poster"));
-    return res['title'] != null;
+    return res['title'] != '';
   }
 
   Template.poster_info.hasWhere = function() {
     var res = Posters.findOne(Session.get("selected_poster"));
-    return (res['where'] != null);
+    return (res['where'] != '');
   }
 
   Template.poster_info.hasDate = function() {
     var res = Posters.findOne(Session.get("selected_poster"));
-    return (res['date'] != null);
+    return (res['date'] != '');
   }
 
   Template.poster_info.hasTime = function() {
     var res = Posters.findOne(Session.get("selected_poster"));
-    return (res['time'] != null);
+    return (res['time'] != '');
   }
 
   Template.poster_info.hasTags = function() {
     var res = Posters.findOne(Session.get("selected_poster"));
-    return (res['tags'] != null);
+    return (res['tags'] != '');
   }
 
   Template.poster_info.hasNotes = function() {
     var res = Posters.findOne(Session.get("selected_poster"));
-    return (res['notes'] != null);
+    return (res['notes'] != '');
   }
 
 
-  Template.poster_info.details = function() {
-    var res = Posters.findOne(Session.get("selected_poster"));
-    var details = [];
-    if (res['where'] != null) {
-      details.append(res['where']);
-    }
-    if (res['date'] != null) {
-      details.append(res['date']);
-    }
-    if (res['time'] != null) {
-      details.append(res['time']);
-    }
-    if (res['tags'] != null) {
-      details.append(res['tags']);
-    }
-    return details;
-  }
 
+// EDIT POSTER INFO --------------------------------------------------------------------
    Template.edit_poster_info.poster = function() {
     var res = Posters.findOne(Session.get("selected_poster"));
     res["url"] = url_for_poster(res);
@@ -189,6 +175,37 @@ Template.poster_info.hasDetail = function() {
     $("#save").button();
     $("#cancel").button();
   };
+
+  Template.edit_poster_info.events({
+
+    'submit form' : function (event, template) {
+      event.preventDefault();
+
+      var res = Posters.findOne(Session.get("selected_poster"));
+      console.log('yolo');
+      res['title'] = template.find("input[name=title]").value;
+      res['tags'] = template.find("input[name=tags]").value;
+      res['where'] = template.find("input[name=where]").value;
+      res['date'] = template.find("input[name=date]").value;
+      res['time'] = template.find("input[name=time]").value;
+      res['notes'] = template.find("input[name=notes]").value;
+      Meteor.call('updatePoster', res);
+      console.log("the value is " + res['title']);
+      console.log(res);
+      Router.go('poster_info');
+    },
+
+    'click #cancel' : function (event, template) {
+      template.find("input[name=title]").value = '';
+      template.find("input[name=tags]").value = '';
+      template.find("input[name=where]").value = '';
+      template.find("input[name=date]").value = '';
+      template.find("input[name=time]").value = '';
+      template.find("input[name=notes]").value = '';
+      Router.go('poster_info');
+    }
+
+  });
 
 
   // CAMERA --------------------------------------------------------------------
@@ -283,20 +300,10 @@ if (Meteor.isServer) {
       },
 
       // Edit a poster
-      // must resend all info in order to be updated
+      // must resend new copy of object to be updated
       // where is a GeoJSON operator: http://docs.mongodb.org/manual/reference/glossary/#term-geojson
-      addPosterInfo: function( filename, title, tags, where, date, time, notes ) {
-        Posters.update(
-          {file: filename},
-          {$set: {title: title,
-                  tags: tags,
-                  where: where,
-                  date: date,
-                  time: time,
-                  notes: notes
-                }
-        });
-        console.log(Posters.find({file: filename}));
+      updatePoster: function( poster ) {
+        Posters.update({_id: poster._id}, poster);
       },
 
       // get all the info about a poster
@@ -347,10 +354,10 @@ if (Meteor.isServer) {
 
     });
 
-    //temp testing data
-    Users.remove({});
-    Posters.remove({});
-    Images.remove({});
+    // //temp testing data
+    // Users.remove({});
+    // Posters.remove({});
+    // Images.remove({});
     if (Users.find({}).count() === 0) {
       Users.insert({user: "Masha", pw: "hello"});
       var today = new Date();

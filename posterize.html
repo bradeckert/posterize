@@ -274,47 +274,47 @@
 <!-- ADD INFO PAGE -->
 <!-- TODO(Brad): Implement Edit page -->
 <template name="edit_poster_info">
-  <div class="view-container edit">
-    {{> header_poster_edit }}
+	<div class="view-container edit">
+		{{> header_poster_edit }}
 
-    <div class="below-header">
-      <div class="poster_view">
-        <div class="poster_img">
-	  <img src="{{poster.url}}"/>
-        </div>
+		<div class="below-header">
+			<div class="poster_view">
+				<div class="poster_img">
+					<img src="{{poster.url}}"/>
+				</div>
 
-        <div class="container">
-	  <div>
-            <span class="label">Title:</span> <input type="text"/>
-          </div>
+				<div class="container">
+					<form id="add_info_form">
+						<div>
+							<span class="label">Title:</span> <input type="text" name="title" value="{{poster.title}}"/>
+						</div>
 
-	  <div>
-            <span class="label">Tags:</span><input type="text"/>
-          </div>
+						<div>
+							<span class="label">Tags:</span><input type="text" name="tags" value="{{poster.tags}}"/>
+						</div>
 
-	  <div>
-            <span class="label">Where:</span> <input type="text"/>
-          </div>
+						<div>
+							<span class="label">Where:</span> <input type="text" name="where" value="{{poster.where}}"/>
+						</div>
 
-	  <div>
-            <span class="label">Date:</span> <input type="text" id="datepicker"/>
-          </div>
+						<div>
+							<span class="label">Date:</span> <input type="text" name="date" value="{{poster.date}}"/>
+						</div>
 
-	  <div>
-            <span class="label">Time:</span><input type="text" id="timepicker"/>
-          </div>
+						<div>
+							<span class="label">Time:</span><input type="text" name="time" id="timepicker" value="{{poster.time}}"/>
+						</div>
 
-	  <div>
-            <span class="label">Notes:</span> <textarea rows="3" cols="22"></textarea>
-          </div>
-          <!-- TODO(Brad): should provide (at least placeholder) privacy controls:
-                           Let others edit, etc. -->
+						<div>
+							<span class="label">Notes:</span><input type="text" name="notes" value="{{poster.notes}}"/>
+						</div>
+	          <!-- TODO(Brad): should provide (at least placeholder) privacy controls:
+	          Let others edit, etc. -->
 
-          <!-- TODO(Brad): implement -->
-	  <a href="{{pathFor 'poster_info'}}">
-	    <div id="save">Save</div>
-	    <div id="cancel">Cancel</div>
-	  </a>
+	          <!-- TODO(Masha): Make this look good -->
+          	<div id="save"><input type="submit" value="Save"/></div>
+          	<div id="cancel">Cancel</div>
+	        </form>
         </div>
       </div>
     </div>
