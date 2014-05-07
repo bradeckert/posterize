@@ -121,6 +121,64 @@ if (Meteor.isClient) {
     return res;
   };
 
+Template.poster_info.hasDetail = function() {
+    var res = Posters.findOne(Session.get("selected_poster"));
+    return ((res['title'] != null)
+            || (res['where'] != null) 
+            || (res['date'] != null) 
+            || (res['time'] != null)
+            || (res['tags'] != null));
+  }
+
+  Template.poster_info.hasTitle = function() {
+    var res = Posters.findOne(Session.get("selected_poster"));
+    return res['title'] != null;
+  }
+
+  Template.poster_info.hasWhere = function() {
+    var res = Posters.findOne(Session.get("selected_poster"));
+    return (res['where'] != null);
+  }
+
+  Template.poster_info.hasDate = function() {
+    var res = Posters.findOne(Session.get("selected_poster"));
+    return (res['date'] != null);
+  }
+
+  Template.poster_info.hasTime = function() {
+    var res = Posters.findOne(Session.get("selected_poster"));
+    return (res['time'] != null);
+  }
+
+  Template.poster_info.hasTags = function() {
+    var res = Posters.findOne(Session.get("selected_poster"));
+    return (res['tags'] != null);
+  }
+
+  Template.poster_info.hasNotes = function() {
+    var res = Posters.findOne(Session.get("selected_poster"));
+    return (res['notes'] != null);
+  }
+
+
+  Template.poster_info.details = function() {
+    var res = Posters.findOne(Session.get("selected_poster"));
+    var details = [];
+    if (res['where'] != null) {
+      details.append(res['where']);
+    }
+    if (res['date'] != null) {
+      details.append(res['date']);
+    }
+    if (res['time'] != null) {
+      details.append(res['time']);
+    }
+    if (res['tags'] != null) {
+      details.append(res['tags']);
+    }
+    return details;
+  }
+
    Template.edit_poster_info.poster = function() {
     var res = Posters.findOne(Session.get("selected_poster"));
     res["url"] = url_for_poster(res);
@@ -131,6 +189,7 @@ if (Meteor.isClient) {
     $("#save").button();
     $("#cancel").button();
   };
+
 
   // CAMERA --------------------------------------------------------------------
   var save_new_poster = function() {
@@ -299,7 +358,10 @@ if (Meteor.isServer) {
       yesterday.setDate(today.getDate() - 1);
 
       Posters.insert({test_url: "/posters/IMG_3696.jpeg",
-                      owner: "Masha", snapped: today});
+                      owner: "Masha", snapped: today, 
+                      title: "A title", where: "A location",
+                      date: "A data", time: "A time",
+                      tags: "some tags", notes: "A bunch of notes about this poster"});
       Posters.insert({test_url: "/posters/JamSession.JPG",
                       owner: "Masha", snapped: today});
       Posters.insert({test_url: "/posters/PowerYoga.JPG",
