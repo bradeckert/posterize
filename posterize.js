@@ -207,6 +207,16 @@ Template.poster_info.hasDetail = function() {
 
   });
 
+  // EDIT PAGE HEADER ----------------------------------------------------------
+    //remove a poster by clicking trash
+  Template.header_poster_edit.events({
+    'click .right-button img' : function () {
+      var res = Posters.findOne(Session.get("selected_poster"));
+      Meteor.call('removePoster', res);
+      Router.go('home');
+    }
+  })
+
 
   // CAMERA --------------------------------------------------------------------
   var save_new_poster = function() {
@@ -295,8 +305,8 @@ if (Meteor.isServer) {
       },
 
       // remove poster entry
-      removePoster: function( filename ) {
-        Posters.remove({file: filename});
+      removePoster: function( poster ) {
+        Posters.remove({_id: poster._id});
       },
 
       // Edit a poster
