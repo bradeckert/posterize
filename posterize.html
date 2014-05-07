@@ -78,7 +78,7 @@
   <div class="fixed-bottom">
     <header class="pheader" role="navigation">
       <div class="camera_button pbutton">
-	<img src="/assets/cam_big.png"/>
+				<img src="/assets/cam_big.png"/>
       </div>
 
       <a href="{{pathFor 'home'}}">
@@ -104,7 +104,7 @@
         <input type="checkbox" name="vehicle" value="tomorrow"/>Thursday<br/>
       </div>
       <a href="{{pathFor 'home'}}"><div id="save">Save</div></a>
-      <a href="{{pathFor 'poster_info'}}"><div id="edit"> Edit</div></a>
+      <div id="edit">Edit</div>
       <div id="discard">Discard</div>
     </div>
   </div>
@@ -180,15 +180,13 @@
 
       <a href="{{pathFor 'home'}}">
         <div class="left-button pbutton">
-	  <img src="/assets/back.png"/>
+	  			<img src="/assets/back.png"/>
         </div>
       </a>
 
-      <a href="{{pathFor 'edit_poster_info'}}">
-        <div class="right-button pbutton">
-          <img src="/assets/edit.png"/>
-        </div>
-      </a>
+      <div class="right-button pbutton">
+        <img src="/assets/edit.png"/>
+      </div>
     </header>
   </div>
 </template>
@@ -254,15 +252,11 @@
     <header class="pheader" role="navigation">
       <img class="posterize_logo" src="/assets/posterize_small.png"/>
 
-      <!-- TODO(Brad): path should be set to home or camera,
-                       depending on the entrance point -->
-      <a href="">
-        <div class="left-button pbutton">
-	  <img src="/assets/back.png"/>
-        </div>
-      </a>
+      <div class="left-button pbutton">
+ 				<img src="/assets/back.png"/>
+      </div>
 
-      <!-- TODO(Brad): Maybe ask for confirmation? -->
+      <!-- MAYBETODO(Brad): Maybe ask for confirmation? -->
       <div class="right-button pbutton">
         <img src="/assets/trash.png"/>
       </div>

@@ -208,14 +208,33 @@ Template.poster_info.hasDetail = function() {
   });
 
   // EDIT PAGE HEADER ----------------------------------------------------------
-    //remove a poster by clicking trash
   Template.header_poster_edit.events({
+    //remove a poster by clicking trash
     'click .right-button img' : function () {
       var res = Posters.findOne(Session.get("selected_poster"));
       Meteor.call('removePoster', res);
       Router.go('home');
+    },
+
+    'click .left-button img' : function () {
+      var came_by = Session.get("came_to_edit_by");
+      if (came_by === "camera") {
+        Router.go('camera');
+      } else {
+        Router.go('poster_info');
+      }
     }
-  })
+  });
+
+   // VIEW PAGE HEADER ----------------------------------------------------------
+    //remove a poster by clicking trash
+  Template.header_poster_info.events({
+    //go to edit page
+    'click .right-button img' : function () {
+      Session.set("came_to_edit_by", 'poster_info');
+      Router.go('edit_poster_info');
+    }
+  });
 
 
   // CAMERA --------------------------------------------------------------------
@@ -265,15 +284,12 @@ Template.poster_info.hasDetail = function() {
     'click #edit' : function () {
       save_new_poster();
       Session.set("about_to_save_new", false);
+      Session.set("came_to_edit_by", 'camera');
+      //TODO: make this less hacky
+      while(Session.get('selected_poster') == null) {}
+      Router.go('edit_poster_info');
     }
   });
-
-  // remove a poster
-  // Template.posters.events({
-  //   'click': function () {
-  //     Meteor.call('removePoster', this.file);
-  //   }
-  // });
 
 }
 
