@@ -227,13 +227,23 @@ Template.poster_info.hasDetail = function() {
   Template.edit_poster_info.rendered = function() {
     $("#save").button();
     $("#cancel").button();
+    $("#delete").button();
+    $("#cancel_delete").button();
   };
 
   Template.edit_poster_info.events({
-
-    'submit form' : function (event, template) {
-      event.preventDefault();
-
+    'click #delete' : function() {
+      var res = Posters.findOne(Session.get("selected_poster"));
+      Meteor.call('removePoster', res);
+      Router.go('home');
+    },
+    'click #cancel_delete' : function() {
+      $("#dialog").hide();
+    },
+    'click .x' : function() {
+      $("#dialog").hide();
+    },
+    'click #save' : function (event, template) {
       var res = Posters.findOne(Session.get("selected_poster"));
       console.log('yolo');
       res['title'] = template.find("input[name=title]").value;
@@ -264,9 +274,7 @@ Template.poster_info.hasDetail = function() {
   Template.header_poster_edit.events({
     //remove a poster by clicking trash
     'click .right-button img' : function () {
-      var res = Posters.findOne(Session.get("selected_poster"));
-      Meteor.call('removePoster', res);
-      Router.go('home');
+      $("#dialog").show();
     },
 
     'click .left-button img' : function () {

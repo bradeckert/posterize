@@ -211,42 +211,42 @@
 
 	      <div class="container">
 	        <!-- TODO(Masha): Make look nice -->
-					{{#if hasDetail}}
-						{{#if hasTitle}}
-							<div class="title">{{poster.title}}</div>
-						{{/if}}
-						{{#if hasWhere}}
-							<div class="detail">{{poster.where}}</div>
-						{{/if}}
-						{{#if hasDate}}
-							<div class="detail">{{poster.date}}</div>
-						{{/if}}
-						{{#if hasTime}}
-							<div class="detail">{{poster.time}}</div>
-						{{/if}}
-						{{#if hasTags}}
-							<div class="detail">{{poster.tags}}</div>
-						{{/if}}
-						{{#if hasNotes}}
-							<div class="notes">{{poster.notes}}</div>
-						{{/if}}
-					{{else}}
-						<div class="title">
-							<span>Add info now</span>
-							<a href="{{pathFor 'edit_poster_info'}}">
-								<div class="right-button pbutton">
-									<img src="/assets/edit.png"/>
-								</div>
-							</a>
-						</div>
-					{{/if}}
+		{{#if hasDetail}}
+		{{#if hasTitle}}
+		<div class="title">{{poster.title}}</div>
+		{{/if}}
+		{{#if hasWhere}}
+		<div class="detail">{{poster.where}}</div>
+		{{/if}}
+		{{#if hasDate}}
+		<div class="detail">{{poster.date}}</div>
+		{{/if}}
+		{{#if hasTime}}
+		<div class="detail">{{poster.time}}</div>
+		{{/if}}
+		{{#if hasTags}}
+		<div class="detail">{{poster.tags}}</div>
+		{{/if}}
+		{{#if hasNotes}}
+		<div class="notes">{{poster.notes}}</div>
+		{{/if}}
+		{{else}}
+		<div class="title">
+		  <span>Add info now</span>
+		  <a href="{{pathFor 'edit_poster_info'}}">
+		    <div class="right-button pbutton">
+		      <img src="/assets/edit.png"/>
+		    </div>
+		  </a>
+		</div>
+		{{/if}}
 
-					<div class="share">
-					  <img class="small_icon" src="/assets/facebook.png"/>
-					  <img class="small_icon" src="/assets/twitter.png"/>
-					  <img class="small_icon" src="/assets/google.png"/>
-					  <img class="small_icon" src="/assets/calendar.png"/>
-					</div>
+		<div class="share">
+		  <img class="small_icon" src="/assets/facebook.png"/>
+		  <img class="small_icon" src="/assets/twitter.png"/>
+		  <img class="small_icon" src="/assets/google.png"/>
+		  <img class="small_icon" src="/assets/calendar.png"/>
+		</div>
       	</div>
     	</div>
   	</div>
@@ -311,11 +311,23 @@
 	          <!-- TODO(Brad): should provide (at least placeholder) privacy controls:
 	          Let others edit, etc. -->
 
-	          <!-- TODO(Masha): Make this look good -->
-          	<div id="save"><input type="submit" value="Save"/></div>
+          	<div id="save">Save</div>
           	<div id="cancel">Cancel</div>
 	        </form>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="dialog" class="hidden" title="Search">
+    <div class="dialog-header">
+      <div>Are you sure you want to delete this poster?...</div>
+      <div class="x">&#10006;</div>
+    </div>
+    <div class="container">
+      <div class="buttons">
+        <div id="delete">Yes, delete</div>
+        <div id="cancel_delete">Cancel</div>
       </div>
     </div>
   </div>
