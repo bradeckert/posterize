@@ -4,7 +4,11 @@ body {
 /*    padding-top: 70px;*/
     padding: 0;
     margin: 0;
-font: 18px/20px "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font: 18px/20px "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
+a {
+    text-decoration: none;
 }
 
 .hidden {
@@ -342,10 +346,33 @@ font: 18px/20px "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue",
     height:100%;
     position: absolute;
     left: 0px;
-    top: 0px; 
+    top: 0px;
 }*/
 
+.label-big {
+    color: #1D56B4;
+    text-shadow: 0 0 2px #cccccc;
+    margin: 25px 0 5px 0;
+    font-size: 1.2em;
+}
 
+.help-text {
+    font-size: small;
+    color: #999999;
+    font-style: italic;
+}
+
+.buttons {
+    margin: 20px 0 0 15px;
+}
+
+.search .dialog-header {
+    background: orange;
+}
+
+.tags {
+    background-color: #cccccc;
+}
 
 
 /*.overlay {

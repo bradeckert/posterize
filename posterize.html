@@ -116,19 +116,23 @@
                  if the search is on - populate with current "search_criterion"
                  values -->
 <template name="search_settings">
-  <div class="searchView">
-    <p><span class="label_big">&nbsp;</span></p>
-    <p><span class="label_big">TAGS:</span></p>
-    <p>
-      <span class="tags">party</span><span class="tags">concert</span>
-      <span class="tags">jazz</span><span class="tags">blues</span>
-    </p>
-    <p><span class="label_big">NEAR:</span></p>
-    <p><input type="text" placeholder="Select a Location"/></p>
-    <p><span class="label_big">DATE:</span></p>
-    <p><span class="label">From:</span> <input type="text" id="datepicker"/></p>
-    <p><span class="label">To:</span> <input type="text" id="datepicker"/></p>
+  <div class="label-big">Tags:</div>
+  <div>
+    <div class="tags">party</div><div class="tags">concert</div>
+    <div class="tags">jazz</div><div class="tags">blues</div>
   </div>
+
+  <div class="label-big">Near:</div>
+  <div><input type="text" placeholder="Select a Location"/></div>
+
+  <div class="label-big">Event date:</div>
+  <div class="help-text">skips posters not tagged with an event date</div>
+  <div><span class="label">From:</span><input type="text" class="date" id="hap_from_date"/></div>
+  <div><span class="label">To:</span><input type="text" class="date" id="hap_to_date"/></div>
+
+  <div class="label-big">Snapped date:</div>
+  <div><span class="label">From:</span><input type="text" class="date" id="snap_from_date"/></div>
+  <div><span class="label">To:</span><input type="text" class="date" id="snap_to_date"/></div>
 </template>
 
 <template name="poster_row">
@@ -166,8 +170,10 @@
     </div>
     <div class="container">
       {{> search_settings}}
-      <div id="search">Search</div>
-      <div id="cancel">Cancel</div>
+      <div class="buttons">
+        <div id="search">Search</div>
+        <div id="cancel">Cancel</div>
+      </div>
     </div>
   </div>
 </template>

@@ -34,14 +34,51 @@ if (Meteor.isClient) {
   Session.set('search_criteria', null);
 
   // HOME / SEARCH -------------------------------------------------------------
-  var get_search_result = function() {
-    // TODO: use search_criteria
-    if (Session.get('mine')) {
-      return Posters.find({owner: Session.get('current_user')},
-                          {'sort' : { 'snapped': -1}});
-    } else {
-      return Posters.find({}, {'sort' : { 'snapped': -1}});
+  var set_search_criteria = function() {
+    Session.set("search_criteria",
+                { "hap_from_date" : $("#hap_from_date").datepicker("getDate"),
+                  "hap_to_date" : $("#hap_to_date").datepicker("getDate"),
+                  "snap_from_date" : $("#snap_from_date").datepicker("getDate"),
+                  "snap_to_date" : $("#snap_to_date").datepicker("getDate")
+                });
+  };
+
+  var get_date_search_filter = function(from, to) {
+    if (!from && !to) {
+      return null;
     }
+
+    var res = {};
+    if (from) {
+      res["$gte"] = from;
+    }
+    if (to) {
+      res["$lte"] = to;
+    }
+    return res;
+  };
+
+  var set_mongo_search_filter = function() {
+    var res = {};
+    if (Session.get('mine')) {
+      res.owner = Session.get('current_user');
+    }
+    if (Session.get("search_criteria")) {
+      var snapped_filter = get_date_search_filter(
+        Session.get("search_criteria").snap_from_date,
+        Session.get("search_criteria").snap_to_date);
+      if (snapped_filter) {
+        res["snapped"] = snapped_filter;
+      }
+    }
+    return res;
+  };
+
+  var get_search_result = function() {
+    console.log("filter:");
+    console.log(set_mongo_search_filter());
+    return Posters.find(set_mongo_search_filter(),
+                        {'sort' : { 'snapped': -1}});
   };
 
   Template.home.rows = function() {
@@ -99,12 +136,12 @@ if (Meteor.isClient) {
   Template.home.rendered = function() {
     $("#search").button();
     $("#cancel").button();
+    $(".date").datepicker();
   };
 
   Template.home.events({
     'click #search': function() {
-      // TODO: update search criteria
-      Session.set("search_criteria", true);
+      set_search_criteria();
       $("#dialog").hide();
     },
     'click #cancel': function() {
@@ -142,8 +179,8 @@ if (Meteor.isClient) {
 Template.poster_info.hasDetail = function() {
     var res = Posters.findOne(Session.get("selected_poster"));
     return ((res['title'] != null)
-            || (res['where'] != null) 
-            || (res['date'] != null) 
+            || (res['where'] != null)
+            || (res['date'] != null)
             || (res['time'] != null)
             || (res['tags'] != null));
   }
@@ -286,7 +323,7 @@ Template.poster_info.hasDetail = function() {
 
   Template.camera.events({
     'click .camera_button': function() {
-      Session.set("about_to_save_new", true); 
+      Session.set("about_to_save_new", true);
       context.drawImage(videoElement, 0, 0, 720, 1280);
         new_img = canvas.toDataURL("image/png");
     },
@@ -326,8 +363,8 @@ Template.poster_info.hasDetail = function() {
           audios.push(sourceInfo.id);
         } else if (sourceInfo.kind === 'video'&& sourceInfo.facing == "environment") {
           cameras.push(sourceInfo.id);
-        } 
-        
+        }
+
       }
         start();
     }
@@ -343,7 +380,7 @@ Template.poster_info.hasDetail = function() {
       window.stream = stream; // make stream available to console
       videoElement.src = window.URL.createObjectURL(stream);
       videoElement.play();
-      
+
     }
 
     function errorCallback(error){
@@ -355,7 +392,7 @@ Template.poster_info.hasDetail = function() {
         videoElement.src = null;
         window.stream.stop();
       }
-      var audioSource = audios[0];  
+      var audioSource = audios[0];
       var videoSource = cameras[0];
       var constraints = {
         audio: {
@@ -473,7 +510,7 @@ if (Meteor.isServer) {
       twodaysback.setDate(today.getDate() - 2);
 
       Posters.insert({test_url: "/posters/IMG_3696.jpeg",
-                      owner: "Masha", snapped: today, 
+                      owner: "Masha", snapped: today,
                       title: "A title", where: "A location",
                       date: "A data", time: "A time",
                       tags: "some tags", notes: "A bunch of notes about this poster"});
