@@ -66,14 +66,15 @@
 </template>
 
 
-<template name="test_form">
-  File: <input class="myFileInput" type="file" />
+<template name="camera_input">
+  <video muted autoplay></video>
+  <canvas id="canvas"  width="720" height="1280"></canvas>
 </template>
 
 <!-- CAMERA PAGE -->
 <template name="camera">
   <!-- TODO(Cagri): replace with camera integration -->
-  {{> test_form}}
+  {{> camera_input}}
 
   <div class="fixed-bottom">
     <header class="pheader" role="navigation">

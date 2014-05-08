@@ -8,6 +8,11 @@ Images.allow({download: function (userId, doc) {return true;}});
 Users = new Meteor.Collection("users");
 Posters = new Meteor.Collection("posters");
 
+//globals for camera
+var context;
+var videoElement;
+var new_img;
+
 // Might have to use CollectionsFS for storing images
 // https://github.com/CollectionFS/Meteor-CollectionFS
 
@@ -99,7 +104,7 @@ if (Meteor.isClient) {
   Template.home.events({
     'click #search': function() {
       // TODO: update search criteria
-      Session.set("search_criteria", "not_null");
+      Session.set("search_criteria", true);
       $("#dialog").hide();
     },
     'click #cancel': function() {
@@ -250,11 +255,9 @@ Template.poster_info.hasDetail = function() {
 
   // CAMERA --------------------------------------------------------------------
   var save_new_poster = function() {
-    // TODO(Cagri): change to uploda from canvas instead
-    if (!$(".myFileInput").get(0).files) {
-      alert("No file chosen!");
-    }
-    var file = $(".myFileInput").get(0).files[0];
+    //uncomment for ios
+    //var file = $(".myFileInput").get(0).files[0];
+    var file = new_img;
     console.log("Saving file: " + file);
     Images.insert(file, function (err, fileObj) {
       if (!err) {
@@ -283,7 +286,10 @@ Template.poster_info.hasDetail = function() {
 
   Template.camera.events({
     'click .camera_button': function() {
-      Session.set("about_to_save_new", true); },
+      Session.set("about_to_save_new", true); 
+      context.drawImage(videoElement, 0, 0, 720, 1280);
+        new_img = canvas.toDataURL("image/png");
+    },
     'click #discard' : function() {
       Session.set("about_to_save_new", false); },
     'click .x' : function() {
@@ -301,6 +307,69 @@ Template.poster_info.hasDetail = function() {
       Router.go('edit_poster_info');
     }
   });
+
+  Template.camera_input.rendered = function() {
+    videoElement = document.querySelector("video");
+    var videoSelect = document.querySelector("select#videoSource");
+    var canvas = document.getElementById("canvas");
+    context = canvas.getContext("2d");
+    var cameras=[];
+    var audios=[];
+    navigator.getUserMedia = navigator.getUserMedia ||
+    navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+    function gotSources(sourceInfos) {
+      for (var i = 0; i != sourceInfos.length; ++i) {
+        var sourceInfo = sourceInfos[i];
+
+          if (sourceInfo.kind === 'audio') {
+          audios.push(sourceInfo.id);
+        } else if (sourceInfo.kind === 'video'&& sourceInfo.facing == "environment") {
+          cameras.push(sourceInfo.id);
+        } 
+        
+      }
+        start();
+    }
+
+    if (typeof MediaStreamTrack === 'undefined'){
+      alert('This browser does not support MediaStreamTrack.\n\nTry Chrome Canary.');
+    } else {
+      MediaStreamTrack.getSources(gotSources);
+    }
+
+
+    function successCallback(stream) {
+      window.stream = stream; // make stream available to console
+      videoElement.src = window.URL.createObjectURL(stream);
+      videoElement.play();
+      
+    }
+
+    function errorCallback(error){
+      console.log("navigator.getUserMedia error: ", error);
+    }
+
+    function start(){
+      if (!!window.stream) {
+        videoElement.src = null;
+        window.stream.stop();
+      }
+      var audioSource = audios[0];  
+      var videoSource = cameras[0];
+      var constraints = {
+        audio: {
+          optional: [{sourceId: audioSource}]
+        },
+        video: {
+          optional: [{sourceId: videoSource}]
+        }
+      };
+      navigator.getUserMedia(constraints, successCallback, errorCallback);
+    }
+
+  }
+
 
 }
 
