@@ -176,7 +176,30 @@ if (Meteor.isClient) {
     return res;
   };
 
-Template.poster_info.hasDetail = function() {
+  Template.poster_info.mine = function() {
+    var res = Posters.findOne(Session.get("selected_poster"));
+    if (res['owner'] === Session.get('current_user')){
+      return "You";
+    } else {
+      return "Someone else";
+    }
+  }
+
+  Template.poster_info.snappedString = function() {
+    var res = Posters.findOne(Session.get("selected_poster"));
+    var today = new Date();
+    var yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+    if (res.snapped.getDate() == today.getDate()) {
+      return "today";
+    } else if (res.snapped.getDate() == yesterday.getDate()) {
+      return "yesterday";
+    } else {
+      return "on " + res.snapped.toDateString();
+    }
+  }
+
+  Template.poster_info.hasDetail = function() {
     var res = Posters.findOne(Session.get("selected_poster"));
     return ((res['title'] != null)
             || (res['where'] != null)
