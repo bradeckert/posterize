@@ -33,6 +33,8 @@ if (Meteor.isClient) {
   // When this is set, home page displays as search page
   Session.set('search_criteria', null);
 
+  Session.set('reminder', null);
+
   // HOME / SEARCH -------------------------------------------------------------
   var set_search_criteria = function() {
     Session.set("search_criteria",
@@ -199,13 +201,41 @@ if (Meteor.isClient) {
     }
   }
 
+  Template.poster_info.remindString = function() {
+    var res = Posters.findOne(Session.get("selected_poster"));
+    var today = new Date();
+    var tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+    if (res.remind.getDate() == today.getDate()) {
+      return "tonight";
+    } else if (res.remind.getDate() == tomorrow.getDate()) {
+      return "tomorrow";
+    } else {
+      return res.remind.toDateString();
+    }
+  }
+
+
+
   Template.poster_info.hasDetail = function() {
     var res = Posters.findOne(Session.get("selected_poster"));
-    return ((res['title'] != null)
+    
+    var isNull = ((res['title'] != null)
             || (res['where'] != null)
             || (res['date'] != null)
             || (res['time'] != null)
             || (res['tags'] != null));
+    if (isNull) {
+      if ((res['title'] === '')
+            && (res['where'] === '')
+            && (res['date'] === '')
+            && (res['time'] === '')
+            && (res['tags'] === '')) {
+        return false;
+      }
+    }
+    return isNull;
+
   }
 
   Template.poster_info.hasTitle = function() {
@@ -238,6 +268,11 @@ if (Meteor.isClient) {
     return (res['notes'] != '');
   }
 
+  Template.poster_info.hasRemind = function() {
+    var res = Posters.findOne(Session.get("selected_poster"));
+    return (res['remind'] != null);
+  }
+
 
 
 // EDIT POSTER INFO --------------------------------------------------------------------
@@ -247,11 +282,31 @@ if (Meteor.isClient) {
     return res;
   };
 
+  Template.edit_poster_info.disabled = function() {
+    var res = Posters.findOne(Session.get("selected_poster"));
+
+    var owner = res['owner'];
+    
+    if (res['editable'] == false) {
+      return (owner != Session.get('current_user'));
+    }
+    return false;
+  }
+
   Template.edit_poster_info.rendered = function() {
     $("#save").button();
     $("#cancel").button();
     $("#delete").button();
     $("#cancel_delete").button();
+
+    var res = Posters.findOne(Session.get("selected_poster"));
+    if (res['editable'] == false) {
+      if (res['owner'] === Session.get('current_user')) {
+        $("#me").prop('checked', true);
+      }
+    } else {
+      $("#all").prop('checked', true);
+    }
   };
 
   Template.edit_poster_info.events({
@@ -268,16 +323,14 @@ if (Meteor.isClient) {
     },
     'click #save' : function (event, template) {
       var res = Posters.findOne(Session.get("selected_poster"));
-      console.log('yolo');
       res['title'] = template.find("input[name=title]").value;
       res['tags'] = template.find("input[name=tags]").value;
       res['where'] = template.find("input[name=where]").value;
       res['date'] = template.find("input[name=date]").value;
       res['time'] = template.find("input[name=time]").value;
       res['notes'] = template.find("input[name=notes]").value;
+      res['editable'] = (template.find("input[name=meall]:checked").value === "all");
       Meteor.call('updatePoster', res);
-      console.log("the value is " + res['title']);
-      console.log(res);
       Router.go('poster_info');
     },
 
@@ -323,17 +376,40 @@ if (Meteor.isClient) {
 
 
   // CAMERA --------------------------------------------------------------------
-  var save_new_poster = function() {
+  var save_new_poster = function(template) {
     //uncomment for ios
     //var file = $(".myFileInput").get(0).files[0];
     var file = new_img;
     console.log("Saving file: " + file);
+    var today = new Date();
+    var tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+    var remind_day = template.find("input[name=vehicle]:checked", '#remind_form');
+    console.log(remind_day.value);
+    var remind = null;
+    if (remind_day.value === "tonight") {
+      remind = today;
+    } else if (remind_day.value === "tomorrow") {
+      remind = tomorrow;
+    } else if (remind_day.value === "thursday") {
+      if (4 - today.getUTCDay() >= 0) {
+        remind = new Date();
+        remind.setDate(today.getDate() + (4 - today.getUTCDay()));
+      } else {
+        remind = new Date()
+        remind.setDate(today.getDate() + (4 - (4 - today.getUTCDay())) + 1);
+      }
+    }
+    console.log(remind.toDateString());
+
     Images.insert(file, function (err, fileObj) {
       if (!err) {
         var id = Posters.insert(
           {owner: Session.get('current_user'),
            file: fileObj._id,
-           snapped: new Date()});
+           snapped: new Date(),
+           remind: remind
+        });
         Session.set("selected_poster", id);
         console.log("Stored as : " + fileObj);
       } else {
@@ -357,18 +433,18 @@ if (Meteor.isClient) {
     'click .camera_button': function() {
       Session.set("about_to_save_new", true);
       context.drawImage(videoElement, 0, 0, 720, 1280);
-        new_img = canvas.toDataURL("image/png");
+      new_img = canvas.toDataURL("image/png");
     },
     'click #discard' : function() {
       Session.set("about_to_save_new", false); },
     'click .x' : function() {
       Session.set("about_to_save_new", false); },
-    'click #save' : function () {
-      save_new_poster();
+    'click #save' : function (event, template) {
+      save_new_poster(template);
       Session.set("about_to_save_new", false);
     },
-    'click #edit' : function () {
-      save_new_poster();
+    'click #edit' : function (event, template) {
+      save_new_poster(template);
       Session.set("about_to_save_new", false);
       Session.set("came_to_edit_by", 'camera');
       //TODO: make this less hacky, may not even be neccesary
@@ -529,10 +605,10 @@ if (Meteor.isServer) {
 
     });
 
-    // //temp testing data
-    // Users.remove({});
-    // Posters.remove({});
-    // Images.remove({});
+    //temp testing data
+    Users.remove({});
+    Posters.remove({});
+    Images.remove({});
     if (Users.find({}).count() === 0) {
       Users.insert({user: "Masha", pw: "hello"});
       var today = new Date();
@@ -559,7 +635,8 @@ if (Meteor.isServer) {
 
       Users.insert({owner: "Brad", pw: "hello"});
       Posters.insert({test_url: "/posters/BallRoomDance.JPG",
-                      owner: "Brad", snapped: today});
+                      owner: "Brad", snapped: today,
+                      editable: false});
       Posters.insert({test_url: "/posters/Christmas Lights 2012-01.jpg",
                       owner: "Brad", snapped: today});
       Posters.insert({test_url: "/posters/Circle-Gala-Poster.png",

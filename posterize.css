@@ -61,6 +61,10 @@ a {
     width: 50%;
 }
 
+.radio-wrap.edit {
+    width: 60px;
+}
+
 .radio-wrap {
     height: 30px;
     position: relative;
@@ -328,26 +332,26 @@ a {
     width:80px;
 }
 
+.wide_label {
+    font-family: sans-serif;
+}
+
 .edit .container div {
     margin: 20px 0;
 }
 
 /*CAMERA*/
-/*#canvas {
-    width:640px;
-    height:400px;
+#canvas {
     position: absolute;
     left: 0px;
     top: 0px;
-}*/
+}
 
-/*#camera_preview {
-   width:100%;
-    height:100%;
+#camera_preview {
     position: absolute;
     left: 0px;
     top: 0px;
-}*/
+}
 
 .label-big {
     color: #1D56B4;

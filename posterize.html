@@ -100,9 +100,11 @@
     <div class="container">
       <div>
         <div> Remind me: </div>
-        <input type="checkbox" name="vehicle" value="tonight"/>Tonight<br/>
-        <input type="checkbox" name="vehicle" value="tomorrow"/>Tomorrow<br/>
-        <input type="checkbox" name="vehicle" value="tomorrow"/>Thursday<br/>
+        <form id="remind_form">
+	        <input type="radio" name="vehicle" value="tonight"/>Tonight<br/>
+	        <input type="radio" name="vehicle" value="tomorrow"/>Tomorrow<br/>
+	        <input type="radio" name="vehicle" value="thursday"/>Thursday<br/>
+	      </form>
       </div>
       <div class="buttons">
 	      <div><a href="{{pathFor 'home'}}"><div id="save">Save</div></a></div>
@@ -238,6 +240,9 @@
 							<span class="help-text"><a href="{{pathFor 'edit_poster_info'}}">Add Info</a></span>
 						</div>
 					{{/if}}
+					{{#if hasRemind}}
+						<div class="detail">Reminder email set for {{remindString}}</div>
+					{{/if}}
 
 					<div class="share">
 					  <img class="small_icon" src="/assets/facebook.png"/>
@@ -284,33 +289,56 @@
 				<div class="container">
 					<form id="add_info_form">
 						<div>
-							<span class="label">Title:</span> <input type="text" name="title" value="{{poster.title}}"/>
+							<span class="label">Title:</span><input type="text" name="title" value="{{poster.title}}" disabled="{{disabled}}"/>
 						</div>
 
 						<div>
-							<span class="label">Tags:</span><input type="text" name="tags" value="{{poster.tags}}"/>
+							<span class="label">Tags:</span><input type="text" name="tags" value="{{poster.tags}}" disabled="{{disabled}}"/>
 						</div>
 
 						<div>
-							<span class="label">Where:</span> <input type="text" name="where" value="{{poster.where}}"/>
+							<span class="label">Where:</span><input type="text" name="where" value="{{poster.where}}" disabled="{{disabled}}"/>
 						</div>
 
 						<div>
-							<span class="label">Date:</span> <input type="text" name="date" value="{{poster.date}}"/>
+							<span class="label">Date:</span> <input type="datetime" name="date" value="{{poster.date}}" disabled="{{disabled}}"/>
 						</div>
 
 						<div>
-							<span class="label">Time:</span><input type="text" name="time" id="timepicker" value="{{poster.time}}"/>
+							<span class="label">Time:</span><input type="text" name="time" id="timepicker" value="{{poster.time}}" disabled="{{disabled}}"/>
 						</div>
 
 						<div>
-							<span class="label">Notes:</span><input type="text" name="notes" value="{{poster.notes}}"/>
+							<span class="label">Notes:</span><input type="text" name="notes" value="{{poster.notes}}" disabled="{{disabled}}"/>
 						</div>
+
+						<div>
+							<span class="label">Editable by:</span>
+							<div class="rdclass-container edit">
+					      <div class="radio-wrap edit">
+					        <input type="radio" name="meall" value="all"
+					               class="custom-radio" id="all" disabled="{{disabled}}"/>
+					        <label for="all">ALL</label>
+					      </div>
+					      <div class="radio-wrap edit">
+					        <input type="radio" name="meall" value="me"
+					               class="custom-radio" id="me" disabled="{{disabled}}"/>
+					        <label for="me">ME</label>
+					      </div>
+					    </div>
+					  </div>
+
+						<!-- <div>
+							<span class="wide_label">Allow others to edit this poster?</span><input type="checkbox" name="permissions" id="others_edit" value="true"/>
+						</div> -->
 	          <!-- TODO(Brad): should provide (at least placeholder) privacy controls:
 	          Let others edit, etc. -->
-
-          	<div id="save">Save</div>
-          	<div id="cancel">Cancel</div>
+	          {{#if disabled}}
+	          	<div id="cancel">Back</div>
+	          {{else}}
+          		<div id="save">Save</div>
+          		<div id="cancel">Cancel</div>
+          	{{/if}}
 	        </form>
         </div>
       </div>
