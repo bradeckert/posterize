@@ -36,12 +36,19 @@ if (Meteor.isClient) {
   Session.set('reminder', null);
 
   // HOME / SEARCH -------------------------------------------------------------
+  var get_checked_tag = function() {
+    if ( $("#serious").is(":checked") ) { return "serious"; }
+    if ( $("#fun").is(":checked") ) { return "fun"; }
+    return null;
+  };
+
   var set_search_criteria = function() {
     Session.set("search_criteria",
                 { "hap_from_date" : $("#hap_from_date").datepicker("getDate"),
                   "hap_to_date" : $("#hap_to_date").datepicker("getDate"),
                   "snap_from_date" : $("#snap_from_date").datepicker("getDate"),
-                  "snap_to_date" : $("#snap_to_date").datepicker("getDate")
+                  "snap_to_date" : $("#snap_to_date").datepicker("getDate"),
+                  "tags": get_checked_tag()
                 });
   };
 
@@ -71,6 +78,15 @@ if (Meteor.isClient) {
         Session.get("search_criteria").snap_to_date);
       if (snapped_filter) {
         res["snapped"] = snapped_filter;
+      }
+      var hap_filter = get_date_search_filter(
+        Session.get("search_criteria").hap_from_date,
+        Session.get("search_criteria").hap_to_date);
+      if (hap_filter) {
+        res["date"] = hap_filter;
+      }
+      if (Session.get("search_criteria").tags) {
+        res["tags"] = Session.get("search_criteria").tags;
       }
     }
     return res;
@@ -132,6 +148,23 @@ if (Meteor.isClient) {
     },
     'click .right-button': function() {
       $("#dialog").show();
+      $(':radio').mousedown(function(e){
+        var $self = $(this);
+        if( $self.is(':checked') ){
+          var uncheck = function(){
+            setTimeout(function(){$self.removeAttr('checked');},0);
+          };
+          var unbind = function(){
+            $self.unbind('mouseup',up);
+          };
+          var up = function(){
+            uncheck();
+            unbind();
+          };
+          $self.bind('mouseup',up);
+          $self.one('mouseout', unbind);
+        }
+      });
     }
   });
 
@@ -187,35 +220,33 @@ if (Meteor.isClient) {
     }
   }
 
-  Template.poster_info.snappedString = function() {
-    var res = Posters.findOne(Session.get("selected_poster"));
+  var nice_date_string = function(date) {
     var today = new Date();
     var yesterday = new Date();
     yesterday.setDate(today.getDate() - 1);
-    if (res.snapped.getDate() == today.getDate()) {
+    if (date.getDate() == today.getDate()) {
       return "today";
-    } else if (res.snapped.getDate() == yesterday.getDate()) {
+    } else if (date.getDate() == yesterday.getDate()) {
       return "yesterday";
     } else {
-      return "on " + res.snapped.toDateString();
+      return "on " + date.toDateString();
     }
-  }
+  };
+
+  Template.poster_info.snappedString = function() {
+    return nice_date_string(
+      Posters.findOne(Session.get("selected_poster")).snapped);
+  };
+
+  Template.poster_info.dateString = function() {
+     return nice_date_string(
+      Posters.findOne(Session.get("selected_poster")).date);
+  };
+
 
   Template.poster_info.remindString = function() {
-    var res = Posters.findOne(Session.get("selected_poster"));
-    var today = new Date();
-    var tomorrow = new Date();
-    tomorrow.setDate(today.getDate() + 1);
-    if (res.remind.getDate() == today.getDate()) {
-      return "tonight";
-    } else if (res.remind.getDate() == tomorrow.getDate()) {
-      return "tomorrow";
-    } else {
-      return res.remind.toDateString();
-    }
-  }
-
-
+    return nice_date_string(Posters.findOne(Session.get("selected_poster")).remind);
+  };
 
   Template.poster_info.hasDetail = function() {
     var res = Posters.findOne(Session.get("selected_poster"));
@@ -251,9 +282,14 @@ if (Meteor.isClient) {
     return (res['tags'] != '' && res['tags'] != null);
   }
 
+  var capitaliseFirstLetter = function(string)
+  {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
   Template.poster_info.upperTags = function() {
     var res = Posters.findOne(Session.get("selected_poster"));
-    return (res['tags'].toUpperCase());
+    return capitaliseFirstLetter(res['tags']);
   }
 
   Template.poster_info.hasNotes = function() {
@@ -275,25 +311,81 @@ if (Meteor.isClient) {
     return res;
   };
 
-  Template.edit_poster_info.disabled = function() {
-    var res = Posters.findOne(Session.get("selected_poster"));
+  Template.edit_poster_info.is_my_poster = function() {
+    return Posters.findOne(Session.get("selected_poster"))['owner'] ==
+      Session.get('current_user');
+  };
 
-    var owner = res['owner'];
-    
-    if (res['editable'] == false) {
-      return (owner != Session.get('current_user'));
+  var allow_edits = function() {
+    var current_poster = Posters.findOne(Session.get("selected_poster"));
+    return (current_poster['owner'] == Session.get('current_user')) ||
+      current_poster['editable'];
+  };
+
+  Template.header_poster_info.allow_edits = function() {
+    return allow_edits();
+  };
+
+  Template.poster_info.allow_edits = function() {
+    return allow_edits();
+  };
+
+
+  Template.edit_poster_info.public_checked = function() {
+    if (Posters.findOne(Session.get("selected_poster"))['editable']) {
+      return "checked";
     }
-    return false;
-  }
+    return "";
+  };
+
+  Template.edit_poster_info.public_disabled = function() {
+    if (Posters.findOne(Session.get("selected_poster"))['owner'] !=
+        Session.get('current_user')) { return "disabled"; }
+    return "";
+  };
+
+  Template.edit_poster_info.serious_checked = function() {
+    if (Posters.findOne(Session.get("selected_poster"))['tags'] == "serious") {
+      return "checked";
+    }
+  };
+
+  Template.edit_poster_info.fun_checked = function() {
+    if (Posters.findOne(Session.get("selected_poster"))['tags'] == "fun") {
+      return "checked";
+    }
+  };
 
   Template.edit_poster_info.rendered = function() {
     $("#save").button();
     $("#cancel").button();
     $("#delete").button();
     $("#cancel_delete").button();
+    $("#datetime").datepicker();
+
+    $(':radio').mousedown(function(e){
+      var $self = $(this);
+      if( $self.is(':checked') ){
+        var uncheck = function(){
+          setTimeout(function(){$self.removeAttr('checked');},0);
+        };
+        var unbind = function(){
+          $self.unbind('mouseup',up);
+        };
+        var up = function(){
+          uncheck();
+          unbind();
+        };
+        $self.bind('mouseup',up);
+        $self.one('mouseout', unbind);
+      }
+    });
+
+    AnyTime.picker( "datetime",
+    { format: "%W, %M %D in the Year %z %E", firstDOW: 1 } );
 
     var res = Posters.findOne(Session.get("selected_poster"));
-    
+
     // MINE/ALL fill from data
     if (res['editable'] == false) {
       if (res['owner'] === Session.get('current_user')) {
@@ -324,16 +416,19 @@ if (Meteor.isClient) {
       $("#dialog").hide();
     },
     'click #save' : function (event, template) {
+      console.log("Saving info!");
       var res = Posters.findOne(Session.get("selected_poster"));
       res['title'] = template.find("input[name=title]").value;
       if (template.find("input[name=tags]:checked")) {
         res['tags'] = template.find("input[name=tags]:checked").value;
+      } else {
+        res['tags'] = null;
       }
       res['where'] = template.find("input[name=where]").value;
-      res['date'] = template.find("input[name=date]").value;
-      res['time'] = template.find("input[name=time]").value;
-      res['notes'] = template.find("input[name=notes]").value;
-      res['editable'] = (template.find("input[name=meall]:checked").value === "all");
+      res['date'] = $("#datetime").datepicker("getDate");
+      res['notes'] = $('textarea').val();
+      console.log("Setting editable to: " + $("#public").is(":checked"));
+      res['editable'] = $("#public").is(":checked");//(template.find("input[name=public]").value == "on");
       Meteor.call('updatePoster', res);
       Router.go('poster_info');
     },
@@ -349,7 +444,7 @@ if (Meteor.isClient) {
     }
 
   });
-  
+
 
   // EDIT PAGE HEADER ----------------------------------------------------------
   Template.header_poster_edit.events({
@@ -610,9 +705,33 @@ if (Meteor.isServer) {
     });
 
     //temp testing data
-    // Users.remove({});
-    // Posters.remove({});
-    // Images.remove({});
+    Users.remove({});
+    Posters.remove({});
+    Images.remove({});
+
+    var randomDate = function() {
+      return new Date(2014, 4, Math.round(Math.random() * 30));
+    };
+
+    var random_elem = function(arr) {
+      var index = Math.round(Math.random() * arr.length);
+      if (index >= arr.length) { index = arr.length - 1; }
+      return arr[index];
+    }
+
+    var randomTitle = function() {
+      var adj1 = ["Amazing", "Cool", "Interesting", "Useful"];
+      var adj2 = ["Cultural", "Asian", "Latino", "Educational", "Charity"]
+      var event = ["Lecture series", "Jazz Concert", "Event", "Restaurant", "Dance", "Promo"];
+
+      var res = random_elem(adj1);
+      if (Math.random() > 0.6) {
+          res = res + " " + random_elem(adj2);
+      }
+      res = res + " " + random_elem(event);
+      return res;
+    };
+
     if (Users.find({}).count() === 0) {
       Users.insert({user: "Masha", pw: "hello"});
       var today = new Date();
@@ -622,74 +741,81 @@ if (Meteor.isServer) {
       twodaysback.setDate(today.getDate() - 2);
 
       Posters.insert({test_url: "/posters/IMG_3696.jpeg",
-                      owner: "Masha", snapped: today,
-                      title: "A title", where: "A location",
-                      date: "A date", time: "A time",
+                      owner: "Masha", snapped: today, tags: "serious",
+                      title: randomTitle(), where: "A location",
+                      date: randomDate(), time: "A time",
                       tags: "fun", notes: "A bunch of notes about this poster"});
-      Posters.insert({test_url: "/posters/JamSession.JPG",
+      Posters.insert({test_url: "/posters/JamSession.JPG", title: randomTitle(),
                       owner: "Masha", snapped: today});
-      Posters.insert({test_url: "/posters/PowerYoga.JPG",
+      Posters.insert({test_url: "/posters/PowerYoga.JPG", title: randomTitle(),
+                      date: randomDate(),
                       owner: "Masha", snapped: yesterday});
       Posters.insert({test_url: "/posters/Star-Wars-Retro-Wrestling-Posters-02.jpg",
+                      date: randomDate(), title: randomTitle(),
                       owner: "Masha", snapped: yesterday});
       Posters.insert({test_url: "/posters/Youth Festival Poster 2012 for Web.jpg",
+                      title: randomTitle(),
                       owner: "Masha", snapped: today});
-      Posters.insert({test_url: "/posters/cool-poster-designs-34.jpg",
+      Posters.insert({test_url: "/posters/cool-poster-designs-34.jpg", title: randomTitle(),
                       owner: "Masha", snapped: twodaysback});
 
       Users.insert({owner: "Brad", pw: "hello"});
       Posters.insert({test_url: "/posters/BallRoomDance.JPG",
-                      owner: "Brad", snapped: today,
+                      owner: "Brad", snapped: today, title: randomTitle(),
+                      date: randomDate(),
                       editable: false});
       Posters.insert({test_url: "/posters/Christmas Lights 2012-01.jpg",
                       owner: "Brad", snapped: today});
       Posters.insert({test_url: "/posters/Circle-Gala-Poster.png",
                       owner: "Brad", snapped: yesterday,
-                      title: "A title", where: "A location",
-                      date: "A date", time: "A time",
-                      tags: "fun", editable: "false",
+                      title: randomTitle(), where: "A location",
+                      date: randomDate(), time: "A time",
+                      tags: "fun", editable: false,
                       notes: "A bunch of notes about this poster"});
-      Posters.insert({test_url: "/posters/IMG_2974.JPG",
+      Posters.insert({test_url: "/posters/IMG_2974.JPG", title: randomTitle(),
+                      date: randomDate(),
                       owner: "Brad", snapped: yesterday});
       Posters.insert({test_url: "/posters/IMG_2975.JPG",
                       owner: "Brad", snapped: yesterday,
-                      title: "A title", where: "A location",
-                      date: "A date", time: "A time",
-                      tags: "serious", editable: "true",
+                      title: randomTitle(), where: "A location",
+                      date: randomDate(), time: "A time",
+                      tags: "serious", editable: true,
                       notes: "A bunch of notes about this poster"});
-      Posters.insert({test_url: "/posters/IMG_2976.JPG",
+      Posters.insert({test_url: "/posters/IMG_2976.JPG", title: randomTitle(),
                       owner: "Brad", snapped: yesterday});
       Posters.insert({test_url: "/posters/IMG_2977.JPG",
                       owner: "Brad", snapped: today,
-                      title: "Title for poster", where: "A location",
-                      date: "A date", time: "A time",
-                      tags: "fun", editable: "true",
+                      title: null, where: "A location",
+                      date: randomDate(), time: "A time",
+                      tags: "fun", editable: true,
                       notes: "A bunch of notes about this poster"});
       Posters.insert({test_url: "/posters/IMG_2978.JPG",
                       owner: "Brad", snapped: today,
-                      title: "Something important", where: "A location",
-                      date: "A date", time: "A time",
-                      tags: "serious", editable: "false",
+                      title: randomTitle(), where: "A location",
+                      date: randomDate(), time: "A time",
+                      tags: "serious", editable: false,
                       notes: "A bunch of notes about the important stuff in poster"});
 
       Users.insert({owner: "Cagri", pw: "hello"});
       Posters.insert({test_url: "/posters/environmentalrevolutionposterpx-13892784218nkg4.jpg",
                       owner: "Cagri", snapped: today,
-                      title: "Cagri shot this", where: "A location",
-                      date: "A data", time: "A time",
-                      tags: "serious", editable: "false",
+                      title: randomTitle(), where: "A location",
+                      date: randomDate(), time: "A time",
+                      tags: "serious", editable: false,
                       notes: "A bunch of notes about this poster"});
       Posters.insert({test_url: "/posters/filmFestivalPosters12.jpg",
                       owner: "Cagri", snapped: today});
       Posters.insert({test_url: "/posters/newhope.jpg",
                       owner: "Cagri", snapped: today,
-                      title: "Title", where: "Some location",
-                      date: "A date", time: "A time",
-                      tags: "fun", editable: "true",
+                      title: randomTitle(), where: "Some location",
+                      date: randomDate(), time: "A time",
+                      tags: "fun", editable: true,
                       notes: "A bunch of notes about this poster"});
       Posters.insert({test_url: "/posters/nhscooklifepostersandflyers-13892767598kgn4.jpg",
+                      title: randomTitle(),  date: randomDate(),
                       owner: "Cagri", snapped: yesterday});
       Posters.insert({test_url: "/posters/poster69.jpg",
+                      title: randomTitle(), date: randomDate(),
                       owner: "Cagri", snapped: yesterday});
       Posters.insert({test_url: "/posters/sample_poster.png",
                       owner: "Cagri", snapped: twodaysback});

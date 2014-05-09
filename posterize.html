@@ -6,6 +6,7 @@
 	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+        <script src="http://people.csail.mit.edu/shumash/anytime.5.min.js"></script>
 	<link rel="stylesheet" href="posterize.css" />
 	<link href="http://fonts.googleapis.com/css?family=Patrick+Hand+SC" rel="stylesheet" type="text/css" />
         <script type="text/javascript">
@@ -122,25 +123,24 @@
                  if the search is on - populate with current "search_criterion"
                  values -->
 <template name="search_settings">
-  <div>
-		<span class="label-big">Tag:</span>
-		<input type="radio" name="tags" id="serious" value="serious" disabled="{{disabled}}"/>
-		<label for="serious">SERIOUS</label>
-		<input type="radio" name="tags" id="fun" value="fun" disabled="{{disabled}}"/>
-		<label for="fun">FUN</label>
-	</div>
+  <div class="label-big">Type:</div>
+  <input  type="radio" name="tags" id="serious" value="serious" disabled="{{disabled}}"/>
+  <label class="tag-text" style="margin-right:10px;" for="serious">Serious</label>
+  <input type="radio" name="tags" id="fun" value="fun" disabled="{{disabled}}"/>
+  <label class="tag-text" for="fun">Fun</label>
+
+  <div class="label-big">Event date:</div>
+  <div class="help-text">only searches posters tagged with an event date</div>
+  <div><span class="label-sm">From:</span><input type="text" class="date" id="hap_from_date"/></div>
+  <div><span class="label-sm">To:</span><input type="text" class="date" id="hap_to_date"/></div>
+
+  <div class="label-big">Snapped date:</div>
+  <div><span class="label-sm">From:</span><input type="text" class="date" id="snap_from_date"/></div>
+  <div><span class="label-sm">To:</span><input type="text" class="date" id="snap_to_date"/></div>
 
   <div class="label-big">Near:</div>
   <div><input type="text" placeholder="Select a Location"/></div>
 
-  <div class="label-big">Event date:</div>
-  <div class="help-text">skips posters not tagged with an event date</div>
-  <div><span class="label">From:</span><input type="text" class="date" id="hap_from_date"/></div>
-  <div><span class="label">To:</span><input type="text" class="date" id="hap_to_date"/></div>
-
-  <div class="label-big">Snapped date:</div>
-  <div><span class="label">From:</span><input type="text" class="date" id="snap_from_date"/></div>
-  <div><span class="label">To:</span><input type="text" class="date" id="snap_to_date"/></div>
 </template>
 
 <template name="poster_row">
@@ -199,9 +199,11 @@
         </div>
       </a>
 
+      {{#if allow_edits}}
       <div class="right-button pbutton">
         <img src="/assets/edit.png"/>
       </div>
+      {{/if}}
     </header>
   </div>
 </template>
@@ -209,54 +211,64 @@
 <!-- POSTER VIEW PAGE -->
 <template name="poster_info">
   <div class="view-container view">
-  	{{> header_poster_info }}
+    {{> header_poster_info }}
 
-	  <div class="below-header">
-	    <div class="poster_view">
-	      <div class="poster_img">
-					<img src="{{poster.url}}"/>
-	      </div>
+    <div class="below-header">
+      <div class="poster_view">
+	<div class="poster_img">
+	  <img src="{{poster.url}}"/>
+	</div>
 
-	      <div class="container">
-	        <!-- TODO(Masha): Make look nice -->
-	        <div class="label-big">{{mine}} snapped this {{snappedString}}</div>
-					{{#if hasDetail}}
-						{{#if hasTitle}}
-							<div class="title">{{poster.title}}</div>
-						{{/if}}
-						{{#if hasWhere}}
-							<div class="detail">{{poster.where}}</div>
-						{{/if}}
-						{{#if hasDate}}
-							<div class="detail">{{poster.date}}</div>
-						{{/if}}
-						{{#if hasTime}}
-							<div class="detail">{{poster.time}}</div>
-						{{/if}}
-						{{#if hasTags}}
-							<div class="detail">Tagged with: '{{upperTags}}'</div>
-						{{/if}}
-						{{#if hasNotes}}
-							<div class="notes">{{poster.notes}}</div>
-						{{/if}}
-					{{else}}
-						<div class="title">
-							<span class="help-text"><a href="{{pathFor 'edit_poster_info'}}">Add Info</a></span>
-						</div>
-					{{/if}}
-					{{#if hasRemind}}
-						<div class="detail">Reminder email set for {{remindString}}</div>
-					{{/if}}
+	<div class="container">
 
-					<div class="share">
-					  <img class="small_icon" src="/assets/facebook.png"/>
-					  <img class="small_icon" src="/assets/twitter.png"/>
-					  <img class="small_icon" src="/assets/google.png"/>
-					  <img class="small_icon" src="/assets/calendar.png"/>
-					</div>
+
+
+	  <!-- TODO(Masha): Make look nice -->
+	  <div class="label-snap">{{mine}} snapped this {{snappedString}}</div>
+	  {{#if hasDetail}}
+	  {{#if hasTitle}}
+	  <div class="title">{{poster.title}}</div>
+	  {{/if}}
+          {{#if hasTags}}
+	  <div class="detail"><span class="help-text">this is</span> <span class="tag-text">{{upperTags}}</span></div>
+	  {{/if}}
+	  {{#if hasWhere}}
+	  <div class="detail">{{poster.where}}</div>
+          {{else}}
+          <div class="help-text">no location set</div>
+	  {{/if}}
+	  {{#if poster.date}}
+	  <div class="detail">Happening on {{dateString}}</div>
+          {{else}}
+          <div class="help-text">no event date set</div>
+	  {{/if}}
+	  {{#if hasNotes}}
+	  <div class="notes"><b>Notes:</b> {{poster.notes}}</div>
+	  {{/if}}
+	  {{else}}
+          {{#if allow_edits}}
+	  <div>
+	    <span class="help-text"><a href="{{pathFor 'edit_poster_info'}}">Add more info here</a></span>
+	  </div>
+          {{else}}
+          <div>
+            <span class="help-text">This poster can only be changed by its owner.</span>
+          </div>
+          {{/if}}
+	  {{/if}}
+	  {{#if hasRemind}}
+	  <div class="detail">Reminder email set for {{remindString}}</div>
+	  {{/if}}
+
+	  <div class="share">
+	    <img class="small_icon" src="/assets/facebook.png"/>
+	    <img class="small_icon" src="/assets/twitter.png"/>
+	    <img class="small_icon" src="/assets/google.png"/>
+	    <img class="small_icon" src="/assets/calendar.png"/>
+	  </div>
       	</div>
-    	</div>
-  	</div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -267,7 +279,7 @@
       <img class="posterize_logo" src="/assets/posterize_small.png"/>
 
       <div class="left-button pbutton">
- 				<img src="/assets/back.png"/>
+ 	<img src="/assets/back.png"/>
       </div>
 
       <!-- MAYBE TODO(Brad): Maybe ask for confirmation? -->
@@ -281,69 +293,57 @@
 <!-- ADD INFO PAGE -->
 <!-- TODO(Masha): Make this look right -->
 <template name="edit_poster_info">
-	<div class="view-container edit">
-		{{> header_poster_edit }}
+  <div class="view-container edit">
+    {{> header_poster_edit }}
 
-		<div class="below-header">
-			<div class="poster_view">
-				<div class="poster_img">
-					<img src="{{poster.url}}"/>
-				</div>
+    <div class="below-header">
+      <div class="poster_view">
+	<div class="poster_img">
+	  <img src="{{poster.url}}"/>
+	</div>
 
-				<div class="container">
-					<form id="add_info_form">
-						<div>
-							<span class="label">Title:</span><input type="text" name="title" value="{{poster.title}}" disabled="{{disabled}}"/>
-						</div>
+	<div class="container">
+	  <form id="add_info_form">
+	    <div>
+	      <div class="label-big">
+                <span class="label">Title:</span>
+              </div>
+              <input type="text" name="title" value="{{poster.title}}"/>
+	    </div>
 
-						<div>
-							<span class="label">Tag:</span>
-							<input type="radio" name="tags" id="serious" value="serious" disabled="{{disabled}}"/>
-							<label for="serious">SERIOUS</label>
-							<input type="radio" name="tags" id="fun" value="fun" disabled="{{disabled}}"/>
-							<label for="fun">FUN</label>
-						</div>
+	    <div>
+	      <div class="label-big"><span class="label">Type:</span></div>
+	      <input type="radio" name="tags" id="serious" value="serious" {{serious_checked}}/>
+	      <label style="margin-right:10px;" class="tag-text" for="serious">Serious</label>
+	      <input type="radio" name="tags" id="fun" value="fun" {{fun_checked}}/>
+	      <label class="tag-text" for="fun">Fun</label>
+	    </div>
 
-						<div>
-							<span class="label">Where:</span><input type="text" name="where" value="{{poster.where}}" disabled="{{disabled}}"/>
-						</div>
+	    <div>
+	      <div class="label-big"><span class="label">Where:</span></div>
+              <input type="text" name="where" value="{{poster.where}}"/>
+	    </div>
 
-						<div>
-							<span class="label">Date:</span> <input type="datetime" name="date" value="{{poster.date}}" disabled="{{disabled}}"/>
-						</div>
+	    <div>
+	      <div class="label-big"><span class="label">Event Date:</span></div>
+              <input id="datetime" type="datetime" name="date" value="{{poster.date}}"/>
+	    </div>
 
-						<div>
-							<span class="label">Time:</span><input type="text" name="time" id="timepicker" value="{{poster.time}}" disabled="{{disabled}}"/>
-						</div>
+	    <div>
+	      <div class="label-big"><span class="label">Notes:</span></div>
+              <textarea rows="4" cols="50">{{poster.notes}}</textarea>
+	    </div>
 
-						<div>
-							<span class="label">Notes:</span><input type="text" name="notes" value="{{poster.notes}}" disabled="{{disabled}}"/>
-						</div>
+	    <div>
+              <div class="label-big"><span class="label">&nbsp;</span></div>
+              <input type="checkbox" name="public" id="public" {{public_checked}} {{public_disabled}}/>
+              <span class="info-text">Anyone can edit</span>
+            </div>
 
-						<div>
-							<span class="label">Editable by:</span>
-							<div class="rdclass-container edit">
-					      <div class="radio-wrap edit">
-					        <input type="radio" name="meall" value="all"
-					               class="custom-radio" id="all" disabled="{{disabled}}"/>
-					        <label for="all">ALL</label>
-					      </div>
-					      <div class="radio-wrap edit">
-					        <input type="radio" name="meall" value="me"
-					               class="custom-radio" id="me" disabled="{{disabled}}"/>
-					        <label for="me">ME</label>
-					      </div>
-					    </div>
-					  </div>
+            <div id="save">Save</div>
+            <div id="cancel">Cancel</div>
 
-	          {{#if disabled}}
-	          	<div id="cancel">Back</div>
-	          {{else}}
-          		<div id="save">Save</div>
-          		<div id="cancel">Cancel</div>
-          	{{/if}}
-
-	        </form>
+	  </form>
         </div>
       </div>
     </div>
@@ -357,10 +357,10 @@
     <div class="container">
       <div class="buttons">
       	<div>
-        	<div id="delete">Yes, delete</div>
+          <div id="delete">Yes, delete</div>
       	</div>
       	<div>
-        	<div id="cancel_delete">Cancel</div>
+          <div id="cancel_delete">Cancel</div>
       	</div>
       </div>
     </div>
