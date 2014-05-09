@@ -292,6 +292,7 @@ if (Meteor.isClient) {
     }
 
   });
+  
 
   // EDIT PAGE HEADER ----------------------------------------------------------
   Template.header_poster_edit.events({
