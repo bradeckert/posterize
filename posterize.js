@@ -624,7 +624,7 @@ if (Meteor.isServer) {
       Posters.insert({test_url: "/posters/IMG_3696.jpeg",
                       owner: "Masha", snapped: today,
                       title: "A title", where: "A location",
-                      date: "A date", time: "A time",
+                      date: "A date", time: "A time", editable: true,
                       tags: "fun", notes: "A bunch of notes about this poster"});
       Posters.insert({test_url: "/posters/JamSession.JPG",
                       owner: "Masha", snapped: today});
@@ -647,7 +647,7 @@ if (Meteor.isServer) {
                       owner: "Brad", snapped: yesterday,
                       title: "A title", where: "A location",
                       date: "A date", time: "A time",
-                      tags: "fun", editable: "false",
+                      tags: "fun", editable: false,
                       notes: "A bunch of notes about this poster"});
       Posters.insert({test_url: "/posters/IMG_2974.JPG",
                       owner: "Brad", snapped: yesterday});
@@ -655,7 +655,7 @@ if (Meteor.isServer) {
                       owner: "Brad", snapped: yesterday,
                       title: "A title", where: "A location",
                       date: "A date", time: "A time",
-                      tags: "serious", editable: "true",
+                      tags: "serious", editable: true,
                       notes: "A bunch of notes about this poster"});
       Posters.insert({test_url: "/posters/IMG_2976.JPG",
                       owner: "Brad", snapped: yesterday});
@@ -663,13 +663,13 @@ if (Meteor.isServer) {
                       owner: "Brad", snapped: today,
                       title: "Title for poster", where: "A location",
                       date: "A date", time: "A time",
-                      tags: "fun", editable: "true",
+                      tags: "fun", editable: true,
                       notes: "A bunch of notes about this poster"});
       Posters.insert({test_url: "/posters/IMG_2978.JPG",
                       owner: "Brad", snapped: today,
                       title: "Something important", where: "A location",
                       date: "A date", time: "A time",
-                      tags: "serious", editable: "false",
+                      tags: "serious", editable: false,
                       notes: "A bunch of notes about the important stuff in poster"});
 
       Users.insert({owner: "Cagri", pw: "hello"});
@@ -677,7 +677,7 @@ if (Meteor.isServer) {
                       owner: "Cagri", snapped: today,
                       title: "Cagri shot this", where: "A location",
                       date: "A data", time: "A time",
-                      tags: "serious", editable: "false",
+                      tags: "serious", editable: false,
                       notes: "A bunch of notes about this poster"});
       Posters.insert({test_url: "/posters/filmFestivalPosters12.jpg",
                       owner: "Cagri", snapped: today});
@@ -685,7 +685,7 @@ if (Meteor.isServer) {
                       owner: "Cagri", snapped: today,
                       title: "Title", where: "Some location",
                       date: "A date", time: "A time",
-                      tags: "fun", editable: "true",
+                      tags: "fun", editable: true,
                       notes: "A bunch of notes about this poster"});
       Posters.insert({test_url: "/posters/nhscooklifepostersandflyers-13892767598kgn4.jpg",
                       owner: "Cagri", snapped: yesterday});
