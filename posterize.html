@@ -230,7 +230,7 @@
 							<div class="detail">{{poster.time}}</div>
 						{{/if}}
 						{{#if hasTags}}
-							<div class="detail">{{poster.tags}}</div>
+							<div class="detail">Tagged with: '{{upperTags}}'</div>
 						{{/if}}
 						{{#if hasNotes}}
 							<div class="notes">{{poster.notes}}</div>
@@ -293,7 +293,9 @@
 						</div>
 
 						<div>
-							<span class="label">Tags:</span><input type="text" name="tags" value="{{poster.tags}}" disabled="{{disabled}}"/>
+							<span class="label">Tags:</span>
+							<input type="radio" name="tags" id="serious" value="serious" disabled="{{disabled}}"/>Serious
+							<input type="radio" name="tags" id="fun" value="fun" disabled="{{disabled}}"/>Fun
 						</div>
 
 						<div>

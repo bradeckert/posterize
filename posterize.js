@@ -263,6 +263,11 @@ if (Meteor.isClient) {
     return (res['tags'] != '');
   }
 
+  Template.poster_info.upperTags = function() {
+    var res = Posters.findOne(Session.get("selected_poster"));
+    return (res['tags'].toUpperCase());
+  }
+
   Template.poster_info.hasNotes = function() {
     var res = Posters.findOne(Session.get("selected_poster"));
     return (res['notes'] != '');
@@ -300,12 +305,21 @@ if (Meteor.isClient) {
     $("#cancel_delete").button();
 
     var res = Posters.findOne(Session.get("selected_poster"));
+    
+    // MINE/ALL fill from data
     if (res['editable'] == false) {
       if (res['owner'] === Session.get('current_user')) {
         $("#me").prop('checked', true);
       }
     } else {
       $("#all").prop('checked', true);
+    }
+
+    // TAGS fill from data
+    if (res['tags'] === "serious") {
+      $("#serious").prop('checked', true);
+    } else if (res['tags'] === "fun") {
+      $("#fun").prop('checked', true);
     }
   };
 
@@ -324,7 +338,7 @@ if (Meteor.isClient) {
     'click #save' : function (event, template) {
       var res = Posters.findOne(Session.get("selected_poster"));
       res['title'] = template.find("input[name=title]").value;
-      res['tags'] = template.find("input[name=tags]").value;
+      res['tags'] = template.find("input[name=tags]:checked").value;
       res['where'] = template.find("input[name=where]").value;
       res['date'] = template.find("input[name=date]").value;
       res['time'] = template.find("input[name=time]").value;
