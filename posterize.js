@@ -219,23 +219,11 @@ if (Meteor.isClient) {
 
   Template.poster_info.hasDetail = function() {
     var res = Posters.findOne(Session.get("selected_poster"));
-    
-    var isNull = ((res['title'] != null)
-            || (res['where'] != null)
-            || (res['date'] != null)
-            || (res['time'] != null)
-            || (res['tags'] != null));
-    if (isNull) {
-      if ((res['title'] === '')
-            && (res['where'] === '')
-            && (res['date'] === '')
-            && (res['time'] === '')
-            && (res['tags'] === '')) {
-        return false;
-      }
-    }
-    return isNull;
-
+    return ((res['title'] != null && res['title'] != '')
+            || (res['where'] != null    && res['where'] != '')
+            || (res['date'] != null     && res['date'] != '')
+            || (res['time'] != null     && res['time'] != '')
+            || (res['tags'] != null     && res['tags'] != ''));
   }
 
   Template.poster_info.hasTitle = function() {
@@ -260,7 +248,7 @@ if (Meteor.isClient) {
 
   Template.poster_info.hasTags = function() {
     var res = Posters.findOne(Session.get("selected_poster"));
-    return (res['tags'] != '');
+    return (res['tags'] != '' && res['tags'] != null);
   }
 
   Template.poster_info.upperTags = function() {
@@ -338,7 +326,9 @@ if (Meteor.isClient) {
     'click #save' : function (event, template) {
       var res = Posters.findOne(Session.get("selected_poster"));
       res['title'] = template.find("input[name=title]").value;
-      res['tags'] = template.find("input[name=tags]:checked").value;
+      if (template.find("input[name=tags]:checked")) {
+        res['tags'] = template.find("input[name=tags]:checked").value;
+      }
       res['where'] = template.find("input[name=where]").value;
       res['date'] = template.find("input[name=date]").value;
       res['time'] = template.find("input[name=time]").value;
