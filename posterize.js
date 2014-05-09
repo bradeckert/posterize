@@ -610,9 +610,9 @@ if (Meteor.isServer) {
     });
 
     //temp testing data
-    Users.remove({});
-    Posters.remove({});
-    Images.remove({});
+    // Users.remove({});
+    // Posters.remove({});
+    // Images.remove({});
     if (Users.find({}).count() === 0) {
       Users.insert({user: "Masha", pw: "hello"});
       var today = new Date();
@@ -624,8 +624,8 @@ if (Meteor.isServer) {
       Posters.insert({test_url: "/posters/IMG_3696.jpeg",
                       owner: "Masha", snapped: today,
                       title: "A title", where: "A location",
-                      date: "A data", time: "A time",
-                      tags: "some tags", notes: "A bunch of notes about this poster"});
+                      date: "A date", time: "A time",
+                      tags: "fun", notes: "A bunch of notes about this poster"});
       Posters.insert({test_url: "/posters/JamSession.JPG",
                       owner: "Masha", snapped: today});
       Posters.insert({test_url: "/posters/PowerYoga.JPG",
@@ -644,25 +644,49 @@ if (Meteor.isServer) {
       Posters.insert({test_url: "/posters/Christmas Lights 2012-01.jpg",
                       owner: "Brad", snapped: today});
       Posters.insert({test_url: "/posters/Circle-Gala-Poster.png",
-                      owner: "Brad", snapped: yesterday});
+                      owner: "Brad", snapped: yesterday,
+                      title: "A title", where: "A location",
+                      date: "A date", time: "A time",
+                      tags: "fun", editable: "false",
+                      notes: "A bunch of notes about this poster"});
       Posters.insert({test_url: "/posters/IMG_2974.JPG",
                       owner: "Brad", snapped: yesterday});
       Posters.insert({test_url: "/posters/IMG_2975.JPG",
-                      owner: "Brad", snapped: yesterday});
+                      owner: "Brad", snapped: yesterday,
+                      title: "A title", where: "A location",
+                      date: "A date", time: "A time",
+                      tags: "serious", editable: "true",
+                      notes: "A bunch of notes about this poster"});
       Posters.insert({test_url: "/posters/IMG_2976.JPG",
                       owner: "Brad", snapped: yesterday});
       Posters.insert({test_url: "/posters/IMG_2977.JPG",
-                      owner: "Brad", snapped: today});
+                      owner: "Brad", snapped: today,
+                      title: "Title for poster", where: "A location",
+                      date: "A date", time: "A time",
+                      tags: "fun", editable: "true",
+                      notes: "A bunch of notes about this poster"});
       Posters.insert({test_url: "/posters/IMG_2978.JPG",
-                      owner: "Brad", snapped: today});
+                      owner: "Brad", snapped: today,
+                      title: "Something important", where: "A location",
+                      date: "A date", time: "A time",
+                      tags: "serious", editable: "false",
+                      notes: "A bunch of notes about the important stuff in poster"});
 
       Users.insert({owner: "Cagri", pw: "hello"});
       Posters.insert({test_url: "/posters/environmentalrevolutionposterpx-13892784218nkg4.jpg",
-                      owner: "Cagri", snapped: today});
+                      owner: "Cagri", snapped: today,
+                      title: "Cagri shot this", where: "A location",
+                      date: "A data", time: "A time",
+                      tags: "serious", editable: "false",
+                      notes: "A bunch of notes about this poster"});
       Posters.insert({test_url: "/posters/filmFestivalPosters12.jpg",
                       owner: "Cagri", snapped: today});
       Posters.insert({test_url: "/posters/newhope.jpg",
-                      owner: "Cagri", snapped: today});
+                      owner: "Cagri", snapped: today,
+                      title: "Title", where: "Some location",
+                      date: "A date", time: "A time",
+                      tags: "fun", editable: "true",
+                      notes: "A bunch of notes about this poster"});
       Posters.insert({test_url: "/posters/nhscooklifepostersandflyers-13892767598kgn4.jpg",
                       owner: "Cagri", snapped: yesterday});
       Posters.insert({test_url: "/posters/poster69.jpg",

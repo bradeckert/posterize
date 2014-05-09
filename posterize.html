@@ -122,11 +122,13 @@
                  if the search is on - populate with current "search_criterion"
                  values -->
 <template name="search_settings">
-  <div class="label-big">Tags:</div>
   <div>
-    <div class="tags">party</div><div class="tags">concert</div>
-    <div class="tags">jazz</div><div class="tags">blues</div>
-  </div>
+		<span class="label-big">Tag:</span>
+		<input type="radio" name="tags" id="serious" value="serious" disabled="{{disabled}}"/>
+		<label for="serious">SERIOUS</label>
+		<input type="radio" name="tags" id="fun" value="fun" disabled="{{disabled}}"/>
+		<label for="fun">FUN</label>
+	</div>
 
   <div class="label-big">Near:</div>
   <div><input type="text" placeholder="Select a Location"/></div>
@@ -334,17 +336,13 @@
 					    </div>
 					  </div>
 
-						<!-- <div>
-							<span class="wide_label">Allow others to edit this poster?</span><input type="checkbox" name="permissions" id="others_edit" value="true"/>
-						</div> -->
-	          <!-- TODO(Brad): should provide (at least placeholder) privacy controls:
-	          Let others edit, etc. -->
 	          {{#if disabled}}
 	          	<div id="cancel">Back</div>
 	          {{else}}
           		<div id="save">Save</div>
           		<div id="cancel">Cancel</div>
           	{{/if}}
+
 	        </form>
         </div>
       </div>
@@ -353,7 +351,7 @@
 
   <div id="dialog" class="hidden" title="Search">
     <div class="dialog-header">
-      <div>Are you sure you want to delete this poster?...</div>
+      <div>Are you sure you want to delete this poster?</div>
       <div class="x">&#10006;</div>
     </div>
     <div class="container">
