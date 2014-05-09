@@ -356,6 +356,11 @@ if (Meteor.isClient) {
     }
   };
 
+  Template.edit_poster_info.disabledEdit = function() {
+    var res = Posters.findOne(Session.get("selected_poster"));
+    return (res['owner'] != Session.get('current_user'));
+  }
+
   Template.edit_poster_info.rendered = function() {
     $("#save").button();
     $("#cancel").button();
@@ -740,10 +745,7 @@ if (Meteor.isServer) {
       yesterday.setDate(today.getDate() - 1);
       twodaysback.setDate(today.getDate() - 2);
 
-      Posters.insert({test_url: "/posters/IMG_3696.jpeg",
-                      owner: "Masha", snapped: today, tags: "serious",
-                      title: randomTitle(), where: "A location",
-                      date: randomDate(), time: "A time",
+      Posters.insert({test_url: "/posters/IMG_3696.jpeg", snapped: today,
                       tags: "fun", notes: "A bunch of notes about this poster"});
       Posters.insert({test_url: "/posters/JamSession.JPG", title: randomTitle(),
                       owner: "Masha", snapped: today});

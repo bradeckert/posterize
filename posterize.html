@@ -344,6 +344,71 @@
             <div id="cancel">Cancel</div>
 
 	  </form>
+<!--
+	<div class="view-container edit">
+		{{> header_poster_edit }}
+
+		<div class="below-header">
+			<div class="poster_view">
+				<div class="poster_img">
+					<img src="{{poster.url}}"/>
+				</div>
+
+				<div class="container">
+					<form id="add_info_form">
+						<div>
+							<span class="label">Title:</span><input type="text" name="title" value="{{poster.title}}" disabled="{{disabled}}"/>
+						</div>
+
+						<div>
+							<span class="label">Tag:</span>
+							<input type="radio" name="tags" id="serious" value="serious" disabled="{{disabled}}"/>
+							<label for="serious">SERIOUS</label>
+							<input type="radio" name="tags" id="fun" value="fun" disabled="{{disabled}}"/>
+							<label for="fun">FUN</label>
+						</div>
+
+						<div>
+							<span class="label">Where:</span><input type="text" name="where" value="{{poster.where}}" disabled="{{disabled}}"/>
+						</div>
+
+						<div>
+							<span class="label">Date:</span> <input type="datetime" name="date" value="{{poster.date}}" disabled="{{disabled}}"/>
+						</div>
+
+						<div>
+							<span class="label">Time:</span><input type="text" name="time" id="timepicker" value="{{poster.time}}" disabled="{{disabled}}"/>
+						</div>
+
+						<div>
+							<span class="label">Notes:</span><input type="text" name="notes" value="{{poster.notes}}" disabled="{{disabled}}"/>
+						</div>
+
+						<div>
+							<span class="label">Editable by:</span>
+							<div class="rdclass-container edit">
+					      <div class="radio-wrap edit">
+					        <input type="radio" name="meall" value="all"
+					               class="custom-radio" id="all" disabled="{{disabledEdit}}"/>
+					        <label for="all">ALL</label>
+					      </div>
+					      <div class="radio-wrap edit">
+					        <input type="radio" name="meall" value="me"
+					               class="custom-radio" id="me" disabled="{{disabledEdit}}"/>
+					        <label for="me">ME</label>
+					      </div>
+					    </div>
+					  </div>
+
+	          {{#if disabled}}
+	          	<div id="cancel">Back</div>
+	          {{else}}
+          		<div id="save">Save</div>
+          		<div id="cancel">Cancel</div>
+          	{{/if}}
+
+	        </form>
+-->
         </div>
       </div>
     </div>
