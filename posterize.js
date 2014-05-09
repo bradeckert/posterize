@@ -286,6 +286,11 @@ if (Meteor.isClient) {
     return false;
   }
 
+  Template.edit_poster_info.disabledEdit = function() {
+    var res = Posters.findOne(Session.get("selected_poster"));
+    return (res['owner'] != Session.get('current_user'));
+  }
+
   Template.edit_poster_info.rendered = function() {
     $("#save").button();
     $("#cancel").button();
