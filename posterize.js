@@ -233,6 +233,19 @@ if (Meteor.isClient) {
     }
   };
 
+  var nice_date_string_future = function(date) {
+    var today = new Date();
+    var yesterday = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+    if (date.getDate() == today.getDate()) {
+      return "today";
+    } else if (date.getDate() == tomorrow.getDate()) {
+      return "tomorrow";
+    } else {
+      return "on " + date.toDateString();
+    }
+  };
+
   Template.poster_info.snappedString = function() {
     return nice_date_string(
       Posters.findOne(Session.get("selected_poster")).snapped);

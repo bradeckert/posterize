@@ -226,38 +226,38 @@
 	  <!-- TODO(Masha): Make look nice -->
 	  <div class="label-snap">{{mine}} snapped this {{snappedString}}</div>
 	  {{#if hasDetail}}
-	  {{#if hasTitle}}
-	  <div class="title">{{poster.title}}</div>
-	  {{/if}}
-          {{#if hasTags}}
-	  <div class="detail"><span class="help-text">this is</span> <span class="tag-text">{{upperTags}}</span></div>
-	  {{/if}}
-	  {{#if hasWhere}}
-	  <div class="detail">{{poster.where}}</div>
-          {{else}}
-          <div class="help-text">no location set</div>
-	  {{/if}}
-	  {{#if poster.date}}
-	  <div class="detail">Happening on {{dateString}}</div>
-          {{else}}
-          <div class="help-text">no event date set</div>
-	  {{/if}}
-	  {{#if hasNotes}}
-	  <div class="notes"><b>Notes:</b> {{poster.notes}}</div>
-	  {{/if}}
-	  {{else}}
-          {{#if allow_edits}}
-	  <div>
-	    <span class="help-text"><a href="{{pathFor 'edit_poster_info'}}">Add more info here</a></span>
-	  </div>
-          {{else}}
+		  {{#if hasTitle}}
+		  	<div class="title">{{poster.title}}</div>
+		  {{/if}}
+      {{#if hasTags}}
+		  	<div class="detail"><span class="help-text">this is</span> <span class="tag-text">{{upperTags}}</span></div>
+		  {{/if}}
+	  	{{#if hasWhere}}
+	  		<div class="detail">{{poster.where}}</div>
+      {{else}}
+       	<div class="help-text">no location set</div>
+	  	{{/if}}
+	  	{{#if poster.date}}
+	  		<div class="detail">Happening {{dateString}}</div>
+      {{else}}
+        <div class="help-text">no event date set</div>
+	  	{{/if}}
+	  	{{#if hasNotes}}
+	  		<div class="notes"><b>Notes:</b> {{poster.notes}}</div>
+	  	{{/if}}
+	  	{{else}}
+        {{#if allow_edits}}
+				  <div>
+				    <span class="help-text"><a href="{{pathFor 'edit_poster_info'}}">Add more info here</a></span>
+				  </div>
+        {{else}}
           <div>
             <span class="help-text">This poster can only be changed by its owner.</span>
           </div>
-          {{/if}}
-	  {{/if}}
+        {{/if}}
+	  	{{/if}}
 	  {{#if hasRemind}}
-	  <div class="detail">Reminder email set for {{remindString}}</div>
+	  	<div class="detail">Reminder email set for {{remindString}}</div>
 	  {{/if}}
 
 	  <div class="share">
