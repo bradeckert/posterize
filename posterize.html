@@ -282,10 +282,11 @@
  	<img src="/assets/back.png"/>
       </div>
 
-      <!-- MAYBE TODO(Brad): Maybe ask for confirmation? -->
-      <div class="right-button pbutton">
-        <img src="/assets/trash.png"/>
-      </div>
+      {{#if allow_edits}}
+	      <div class="right-button pbutton">
+	        <img src="/assets/trash.png"/>
+	      </div>
+	    {{/if}}
     </header>
   </div>
 </template>
