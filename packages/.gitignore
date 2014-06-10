@@ -50,3 +50,7 @@
 /micro-queue
 /cfs-file
 /cfs-gridfs
+/cfs-collection
+/cfs-storage-adapter
+/emitter
+/cfs-filesystem
