@@ -48,3 +48,5 @@
 /cfs-filesystem
 /reactive-property
 /micro-queue
+/cfs-file
+/cfs-gridfs
